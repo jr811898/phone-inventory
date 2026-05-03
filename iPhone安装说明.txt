@@ -1,0 +1,27 @@
+iPhone 13 Pro Max 安装说明
+
+重要说明：
+iPhone 不能直接安装未签名的 .ipa 文件。
+真正的 iOS 安装包需要 Apple 开发者账号签名，或者通过 TestFlight / App Store 分发。
+
+本文件夹是 PWA 安装包。
+你可以把整个文件夹上传到一个 HTTPS 网站空间，然后用 iPhone Safari 打开 index.html 所在网址。
+
+安装步骤：
+1. 将本文件夹里的所有文件上传到 HTTPS 服务器。
+2. 用 iPhone Safari 打开网址，例如：
+   https://你的域名.com/phone-inventory/index.html
+3. 点击 Safari 底部分享按钮。
+4. 选择“添加到主屏幕”。
+5. 名称填写“手机库存”。
+6. 点击添加。
+7. 以后从桌面图标打开，就会像 App 一样全屏运行。
+
+测试账号：
+老板账号：admin
+销售员账号：staff
+
+注意：
+当前版本使用浏览器本地存储保存数据。
+如果清理 Safari 数据，库存数据可能会被清空。
+正式门店使用建议后续接入云数据库。

@@ -1,0 +1,4703 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>手机库存进销存管理系统</title>
+    <style>
+:root {
+  color-scheme: light;
+  --bg: #f5f7fb;
+  --panel: #ffffff;
+  --panel-soft: #f8fafc;
+  --text: #172033;
+  --muted: #64748b;
+  --line: #d9e0ea;
+  --primary: #0f766e;
+  --primary-dark: #115e59;
+  --danger: #b42318;
+  --warning: #9a6700;
+  --blue: #1d4ed8;
+  --shadow: 0 18px 50px rgba(15, 23, 42, 0.1);
+  font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    linear-gradient(180deg, rgba(15, 118, 110, 0.08), transparent 340px),
+    var(--bg);
+  color: var(--text);
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+}
+
+.login-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(320px, 0.9fr) minmax(360px, 1.1fr);
+}
+
+.login-brand {
+  padding: 56px;
+  background:
+    linear-gradient(135deg, rgba(15, 118, 110, 0.9), rgba(29, 78, 216, 0.86)),
+    url("data:image/svg+xml,%3Csvg width='900' height='900' viewBox='0 0 900 900' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='.16'%3E%3Cpath d='M122 120h220v420H122zM382 186h190v292H382zM620 92h154v610H620zM120 602h460v128H120z'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: cover;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.brand-title {
+  font-size: clamp(34px, 5vw, 60px);
+  line-height: 1.06;
+  margin: 0;
+  letter-spacing: 0;
+}
+
+.brand-copy {
+  max-width: 520px;
+  margin: 18px 0 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.brand-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 36px;
+}
+
+.brand-metric {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.11);
+  padding: 18px;
+  border-radius: 8px;
+}
+
+.brand-metric strong {
+  display: block;
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+
+.brand-metric span {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 13px;
+}
+
+.login-panel-wrap {
+  display: grid;
+  place-items: center;
+  padding: 38px;
+}
+
+.login-panel {
+  width: min(560px, 100%);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 34px;
+}
+
+.login-panel h2 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.subtle {
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.tabs {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--panel-soft);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.tab {
+  height: 42px;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+}
+
+.tab.active {
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
+}
+
+.login-section {
+  margin-top: 26px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.field label {
+  font-size: 14px;
+  color: #334155;
+}
+
+.field small {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.field input,
+.field select {
+  height: 46px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 14px;
+  outline: none;
+  background: #fff;
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.13);
+}
+
+.primary-btn,
+.secondary-btn,
+.danger-btn {
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 650;
+}
+
+.primary-btn {
+  background: var(--primary);
+  color: #fff;
+}
+
+.primary-btn:hover {
+  background: var(--primary-dark);
+}
+
+.secondary-btn {
+  background: #eef2f7;
+  color: #172033;
+}
+
+.danger-btn {
+  background: #fee4e2;
+  color: var(--danger);
+}
+
+.full {
+  width: 100%;
+}
+
+.error {
+  min-height: 24px;
+  color: var(--danger);
+  font-size: 14px;
+  margin: 8px 0 0;
+}
+
+.demo-users {
+  margin-top: 18px;
+  padding: 14px;
+  background: #f8fafc;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.qr-login {
+  display: grid;
+  grid-template-columns: 210px 1fr;
+  gap: 22px;
+  align-items: center;
+}
+
+.qr-code {
+  width: 210px;
+  aspect-ratio: 1;
+  border: 10px solid #fff;
+  outline: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, #111 10px, transparent 10px) 0 0 / 20px 20px,
+    linear-gradient(#111 10px, transparent 10px) 0 0 / 20px 20px,
+    radial-gradient(circle at 35px 35px, #fff 0 14px, #111 15px 34px, #fff 35px 45px, #111 46px 62px, transparent 63px),
+    radial-gradient(circle at 165px 35px, #fff 0 14px, #111 15px 34px, #fff 35px 45px, #111 46px 62px, transparent 63px),
+    radial-gradient(circle at 35px 165px, #fff 0 14px, #111 15px 34px, #fff 35px 45px, #111 46px 62px, transparent 63px),
+    #fff;
+  background-blend-mode: multiply, normal, normal, normal, normal, normal;
+}
+
+.qr-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--blue);
+  font-weight: 650;
+  margin-bottom: 10px;
+}
+
+.qr-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #22c55e;
+  box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.13);
+}
+
+.role-choice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 248px 1fr;
+}
+
+.sidebar {
+  background: #111827;
+  color: #fff;
+  padding: 22px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.side-brand {
+  padding: 8px 10px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.side-brand strong {
+  display: block;
+  font-size: 18px;
+}
+
+.side-brand span {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 13px;
+}
+
+.nav {
+  display: grid;
+  gap: 6px;
+}
+
+.nav button {
+  width: 100%;
+  min-height: 42px;
+  border-radius: 8px;
+  padding: 0 12px;
+  text-align: left;
+  color: rgba(255, 255, 255, 0.72);
+  background: transparent;
+}
+
+.nav button.active,
+.nav button:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.user-box {
+  margin-top: auto;
+  padding: 14px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.main {
+  min-width: 0;
+  padding: 28px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #e0f2fe;
+  color: #075985;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.metric-label {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.metric-value {
+  display: block;
+  margin-top: 10px;
+  font-size: 26px;
+  font-weight: 760;
+}
+
+.section {
+  margin-top: 18px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.section-head {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.section-head h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px;
+}
+
+th,
+td {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+th {
+  color: var(--muted);
+  font-weight: 650;
+  background: #f8fafc;
+}
+
+tr:last-child td {
+  border-bottom: 0;
+}
+
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  padding: 18px;
+}
+
+.empty-state {
+  padding: 32px 18px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.notice {
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: #fff7ed;
+  color: var(--warning);
+  border: 1px solid #fed7aa;
+  margin-bottom: 16px;
+}
+
+.import-box {
+  margin: 0;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  background: #f8fafc;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  text-align: left;
+}
+
+.empty-state .import-box {
+  margin: 0 auto 16px;
+  max-width: 760px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.import-box strong {
+  display: block;
+  color: var(--text);
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.import-box p {
+  margin: 0;
+  line-height: 1.6;
+  font-size: 13px;
+}
+
+.import-message {
+  flex: 0 0 auto;
+  max-width: 300px;
+  color: var(--primary-dark);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.mobile-top {
+  display: none;
+}
+
+.quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.lookup-box {
+  padding: 0 18px 18px;
+}
+
+.quick-add-panel {
+  margin: 0 18px 18px;
+  padding: 14px;
+  border: 1px dashed #a7b4c6;
+  border-radius: 8px;
+  background: #f8fafc;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  align-items: end;
+}
+
+.lookup-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.lookup-grid div {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.lookup-grid span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.lookup-grid strong {
+  font-size: 14px;
+}
+
+.lookup-grid small {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.status-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.status-tag.green {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-tag.blue {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.status-tag.orange {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
+.status-tag.gray {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.filter-bar {
+  padding: 18px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  align-items: end;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: rgba(15, 23, 42, 0.45);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.modal {
+  width: min(760px, 100%);
+  max-height: min(760px, 92vh);
+  overflow: auto;
+  background: var(--panel);
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.icon-close {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: #eef2f7;
+  color: #0f172a;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.confirm-list {
+  padding: 18px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.confirm-list div {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.confirm-list span {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.confirm-list strong {
+  font-size: 15px;
+}
+
+@media (max-width: 980px) {
+  .login-shell,
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .login-brand {
+    min-height: 360px;
+    padding: 36px 24px;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .mobile-top {
+    display: block;
+    margin-bottom: 14px;
+  }
+
+  .grid,
+  .form-grid,
+  .lookup-grid,
+  .quick-add-panel,
+  .filter-bar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .login-panel-wrap,
+  .main {
+    padding: 18px;
+  }
+
+  .login-panel {
+    padding: 22px;
+  }
+
+  .brand-metrics,
+  .grid,
+  .form-grid,
+  .lookup-grid,
+  .quick-add-panel,
+  .filter-bar,
+  .confirm-list,
+  .qr-login,
+  .role-choice {
+    grid-template-columns: 1fr;
+  }
+
+  .qr-code {
+    width: min(100%, 230px);
+  }
+
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .import-box {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+    
+/* === 手机端优化版 V1.9：手机比例 + 卡片列表 + 底部导航 === */
+:root {
+  --mobile-max: 430px;
+  --radius-lg: 22px;
+  --radius-md: 16px;
+  --shadow-soft: 0 18px 44px rgba(15, 23, 42, .10);
+}
+html { background: #dbe4ee; }
+body {
+  min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+  background:
+    radial-gradient(circle at top, rgba(15,118,110,.14), transparent 330px),
+    #dbe4ee;
+}
+#app {
+  width: 100%;
+  max-width: var(--mobile-max);
+  min-height: 100dvh;
+  background: #f5f7fb;
+  box-shadow: 0 0 0 1px rgba(15,23,42,.06), 0 30px 80px rgba(15,23,42,.18);
+  position: relative;
+  overflow-x: hidden;
+}
+.login-shell {
+  min-height: 100dvh;
+  display: block !important;
+}
+.login-brand {
+  display: none !important;
+}
+.login-panel-wrap {
+  min-height: 100dvh;
+  padding: 18px !important;
+  display: grid;
+  place-items: center;
+}
+.login-panel {
+  width: 100%;
+  border-radius: 24px !important;
+  padding: 22px !important;
+}
+.qr-login,
+.role-choice,
+.tabs {
+  grid-template-columns: 1fr !important;
+}
+.qr-code {
+  width: min(100%, 210px);
+  margin: 0 auto;
+}
+.app-shell {
+  display: block !important;
+  min-height: 100dvh;
+}
+.sidebar {
+  display: none !important;
+}
+.main {
+  padding: 12px 12px calc(96px + env(safe-area-inset-bottom)) !important;
+}
+.mobile-top { display: none !important; }
+.mobile-appbar {
+  position: sticky;
+  top: 0;
+  z-index: 12;
+  margin: -12px -12px 12px;
+  padding: calc(14px + env(safe-area-inset-top)) 14px 12px;
+  background: rgba(245,247,251,.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(217,224,234,.8);
+}
+.mobile-appbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.mobile-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 820;
+  letter-spacing: -.3px;
+}
+.mobile-subtitle {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.mobile-bottom-nav {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: min(100%, var(--mobile-max));
+  z-index: 30;
+  padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+  background: rgba(255,255,255,.94);
+  backdrop-filter: blur(18px);
+  border-top: 1px solid rgba(217,224,234,.95);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+}
+.mobile-bottom-nav button {
+  min-height: 52px;
+  border-radius: 16px;
+  background: transparent;
+  color: #64748b;
+  display: grid;
+  place-items: center;
+  gap: 2px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.mobile-bottom-nav button strong {
+  display: block;
+  font-size: 18px;
+  line-height: 1;
+}
+.mobile-bottom-nav button.active {
+  background: #e6fffb;
+  color: var(--primary-dark);
+}
+.topbar { display: none !important; }
+.quick-actions {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px !important;
+  margin-bottom: 12px !important;
+}
+.primary-btn,
+.secondary-btn,
+.danger-btn {
+  min-height: 46px !important;
+  border-radius: 15px !important;
+  padding: 0 14px !important;
+}
+.full-mobile {
+  width: 100%;
+}
+.grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+.card,
+.section {
+  border-radius: 20px !important;
+  box-shadow: 0 6px 20px rgba(15,23,42,.04);
+}
+.card {
+  padding: 15px !important;
+}
+.metric-value {
+  font-size: 21px !important;
+  margin-top: 8px !important;
+  line-height: 1.12;
+}
+.metric-label { font-size: 12px !important; }
+.section {
+  margin-top: 12px !important;
+  overflow: visible !important;
+}
+.section-head {
+  padding: 14px !important;
+  align-items: flex-start !important;
+  flex-direction: column;
+  gap: 10px !important;
+}
+.section-head h2 { font-size: 17px !important; }
+.form-grid,
+.filter-bar,
+.quick-add-panel,
+.confirm-list,
+.lookup-grid {
+  grid-template-columns: 1fr !important;
+  padding: 14px !important;
+  gap: 12px !important;
+}
+.field {
+  margin-bottom: 0 !important;
+}
+.field label {
+  font-weight: 700;
+  color: #334155;
+}
+.field input,
+.field select {
+  height: 48px !important;
+  border-radius: 14px !important;
+  font-size: 16px;
+}
+.action-row {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px !important;
+  width: 100%;
+}
+.action-row .primary-btn,
+.action-row .secondary-btn,
+.action-row .danger-btn {
+  width: 100%;
+}
+.export-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 8px;
+  width: 100%;
+}
+.table-wrap {
+  display: none !important;
+}
+.mobile-card-list {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+}
+.phone-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+  box-shadow: 0 6px 18px rgba(15,23,42,.04);
+}
+.phone-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+.phone-card-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 830;
+  color: #0f172a;
+}
+.phone-card-sub {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.phone-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 8px;
+}
+.phone-kv {
+  border: 1px solid #e5ebf3;
+  background: #f8fafc;
+  border-radius: 14px;
+  padding: 9px;
+  min-width: 0;
+}
+.phone-kv span {
+  display: block;
+  color: #64748b;
+  font-size: 11px;
+  margin-bottom: 3px;
+}
+.phone-kv strong {
+  display: block;
+  color: #172033;
+  font-size: 13px;
+  word-break: break-all;
+}
+.search-hero {
+  padding: 14px;
+  background: linear-gradient(135deg, rgba(15,118,110,.11), rgba(29,78,216,.09));
+  border-bottom: 1px solid var(--line);
+}
+.scan-input {
+  height: 54px !important;
+  font-size: 17px !important;
+  border: 2px solid rgba(15,118,110,.22) !important;
+}
+.modal-backdrop {
+  place-items: end center !important;
+  padding: 12px !important;
+}
+.modal {
+  width: min(100%, var(--mobile-max)) !important;
+  max-height: 88dvh !important;
+  border-radius: 24px 24px 12px 12px !important;
+}
+.icon-close {
+  align-self: flex-end;
+}
+.import-box {
+  flex-direction: column !important;
+  align-items: stretch !important;
+  border-radius: 18px !important;
+}
+.badge { white-space: nowrap; }
+.status-tag { font-weight: 800; }
+.empty-state {
+  padding: 22px 14px !important;
+}
+.mobile-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 12px;
+}
+.mobile-tabs button {
+  min-height: 42px;
+  border-radius: 14px;
+  background: #eef2f7;
+  color: #334155;
+  font-weight: 800;
+}
+.mobile-tabs button.active {
+  background: var(--primary);
+  color: #fff;
+}
+@media (min-width: 431px) {
+  body { padding: 18px 0; }
+  #app {
+    min-height: calc(100dvh - 36px);
+    border-radius: 34px;
+    overflow: hidden;
+  }
+  .mobile-bottom-nav {
+    bottom: 18px;
+    border-radius: 0 0 34px 34px;
+    overflow: hidden;
+  }
+}
+
+
+
+/* === V2.0 遮挡修复版：弹窗操作区永远高于底部导航 ===
+   修复范围：入库确认、库存/机型详情、库存/机型编辑、出库详情。
+   原问题：mobile-bottom-nav 的层级高于 modal-backdrop，导致确认/取消按钮被底部导航遮挡。
+*/
+:root {
+  --safe-bottom-nav: calc(82px + env(safe-area-inset-bottom));
+}
+.mobile-bottom-nav {
+  z-index: 80 !important;
+}
+.modal-backdrop {
+  z-index: 9999 !important;
+  inset: 0 !important;
+  width: 100% !important;
+  max-width: var(--mobile-max) !important;
+  margin: 0 auto !important;
+  padding: calc(12px + env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom)) !important;
+  background: rgba(15, 23, 42, .54) !important;
+  place-items: end center !important;
+  pointer-events: auto !important;
+}
+.modal {
+  width: 100% !important;
+  max-width: var(--mobile-max) !important;
+  max-height: calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  border-radius: 24px 24px 18px 18px !important;
+  position: relative !important;
+  z-index: 10000 !important;
+  box-shadow: 0 22px 70px rgba(15, 23, 42, .26) !important;
+}
+.modal > .section-head:first-child {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 4 !important;
+  flex: 0 0 auto !important;
+  background: rgba(255, 255, 255, .98) !important;
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line) !important;
+}
+.modal > .confirm-list {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 14px !important;
+}
+.modal > form {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+.modal > form > .form-grid {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 14px !important;
+}
+.modal > .section-head:last-child,
+.modal > form > .section-head:last-child {
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 5 !important;
+  flex: 0 0 auto !important;
+  background: rgba(255, 255, 255, .98) !important;
+  backdrop-filter: blur(14px);
+  border-top: 1px solid var(--line) !important;
+  box-shadow: 0 -14px 32px rgba(15, 23, 42, .10) !important;
+  padding: 12px 14px calc(14px + env(safe-area-inset-bottom)) !important;
+}
+.modal .action-row {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(108px, 1fr)) !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+.modal .action-row button,
+.modal > .section-head:last-child > button {
+  min-height: 48px !important;
+  width: 100% !important;
+}
+.modal .icon-close {
+  position: relative !important;
+  z-index: 6 !important;
+  flex: 0 0 auto !important;
+}
+body:has(.modal-backdrop) .mobile-bottom-nav {
+  pointer-events: none !important;
+  opacity: .25 !important;
+  filter: blur(.2px);
+}
+@supports not selector(:has(*)) {
+  .modal-backdrop ~ .mobile-bottom-nav,
+  .mobile-bottom-nav.modal-disabled {
+    pointer-events: none !important;
+    opacity: .25 !important;
+  }
+}
+@media (min-width: 431px) {
+  .modal-backdrop {
+    left: 0 !important;
+    right: 0 !important;
+    transform: none !important;
+    border-radius: 34px !important;
+  }
+}
+
+</style>
+  
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="手机库存">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0f766e">
+
+  
+<style id="iphone13pm-pwa-fix">
+html, body {
+  width: 100%;
+  min-height: 100%;
+  overscroll-behavior-y: none;
+}
+body {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.app-shell, .main, #app {
+  max-width: 430px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.mobile-bottom-nav,
+.bottom-nav,
+.tabbar,
+.mobile-nav {
+  padding-bottom: calc(10px + env(safe-area-inset-bottom)) !important;
+  z-index: 50 !important;
+}
+.modal-backdrop,
+.modal-sheet,
+.detail-modal,
+.dialog-backdrop {
+  z-index: 9999 !important;
+}
+.modal,
+.sheet,
+.detail-panel,
+.dialog {
+  max-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 20px) !important;
+}
+.modal-actions,
+.sheet-actions,
+.form-actions,
+.sticky-actions {
+  padding-bottom: calc(14px + env(safe-area-inset-bottom)) !important;
+  z-index: 10000 !important;
+}
+</style>
+
+</head>
+  <body>
+    <div id="app"></div>
+    <script type="module">
+const SESSION_KEY = "phoneInventorySession";
+const INVENTORY_KEY = "phoneInventoryItems";
+const CATALOG_KEY = "phoneInventoryCatalog";
+const SESSION_TTL_MS = 30 * 60 * 1000;
+const PASSWORD_SALT = "mobile-inventory-auth:";
+
+const users = [
+  {
+    id: "u-admin",
+    account: "admin",
+    phone: "13800000001",
+    name: "老板",
+    role: "admin",
+    passwordHash: "43273ba5f832cd95da64da52e9280795feb6552eeca32c37da4fa3a89d32f360",
+  },
+  {
+    id: "u-staff",
+    account: "staff",
+    phone: "13800000002",
+    name: "销售员",
+    role: "staff",
+    passwordHash: "81e3752e16fbd9de1144ead1d5e3e9ecfae4d51dd3de54f3f10a833f67d5177d",
+  },
+];
+
+const defaultCatalog = {
+  brands: [
+    "苹果",
+    "华为",
+    "荣耀",
+    "小米",
+    "Redmi",
+    "OPPO",
+    "vivo",
+    "一加",
+    "真我",
+    "三星",
+    "魅族",
+    "中兴",
+    "努比亚",
+    "联想",
+    "摩托罗拉",
+    "iQOO",
+    "其他",
+  ],
+  models: {
+    苹果: ["iPhone 6s", "iPhone 6s Plus", "iPhone 7", "iPhone 7 Plus", "iPhone 8", "iPhone 8 Plus", "iPhone X", "iPhone XS", "iPhone XS Max", "iPhone XR", "iPhone 11", "iPhone 11 Pro", "iPhone 11 Pro Max", "iPhone SE 2", "iPhone SE 3", "iPhone 12", "iPhone 12 mini", "iPhone 12 Pro", "iPhone 12 Pro Max", "iPhone 13", "iPhone 13 mini", "iPhone 13 Pro", "iPhone 13 Pro Max", "iPhone 14", "iPhone 14 Plus", "iPhone 14 Pro", "iPhone 14 Pro Max", "iPhone 15", "iPhone 15 Plus", "iPhone 15 Pro", "iPhone 15 Pro Max", "iPhone 16", "iPhone 16 Plus", "iPhone 16 Pro", "iPhone 16 Pro Max"],
+    华为: ["Mate 20", "Mate 20 Pro", "Mate 30", "Mate 30 Pro", "Mate 40", "Mate 40 Pro", "Mate 50", "Mate 50 Pro", "Mate 60", "Mate 60 Pro", "Mate 60 Pro+", "P20", "P20 Pro", "P30", "P30 Pro", "P40", "P40 Pro", "P50", "P50 Pro", "P60", "P60 Pro", "Pura 70", "Pura 70 Pro", "Nova 7", "Nova 8", "Nova 9", "Nova 10", "Nova 11", "Nova 12", "畅享 50", "畅享 60", "畅享 70"],
+    荣耀: ["荣耀 50", "荣耀 60", "荣耀 70", "荣耀 80", "荣耀 90", "荣耀 100", "荣耀 X30", "荣耀 X40", "荣耀 X50", "荣耀 Magic 3", "荣耀 Magic 4", "荣耀 Magic 5", "荣耀 Magic 6"],
+    小米: ["小米 10", "小米 10 Pro", "小米 11", "小米 11 Pro", "小米 11 Ultra", "小米 12", "小米 12X", "小米 12 Pro", "小米 13", "小米 13 Pro", "小米 14", "小米 14 Pro", "小米 Civi 2", "小米 Civi 3", "小米 MIX 4"],
+    Redmi: ["Redmi K30", "Redmi K30 Pro", "Redmi K40", "Redmi K40 Pro", "Redmi K50", "Redmi K50 Pro", "Redmi K60", "Redmi K60 Pro", "Redmi K70", "Redmi K70 Pro", "Redmi Note 10 Pro", "Redmi Note 11", "Redmi Note 11 Pro", "Redmi Note 12", "Redmi Note 12 Pro", "Redmi Note 13", "Redmi Note 13 Pro"],
+    OPPO: ["OPPO Reno 6", "OPPO Reno 7", "OPPO Reno 8", "OPPO Reno 9", "OPPO Reno 10", "OPPO Reno 11", "OPPO Find X3", "OPPO Find X5", "OPPO Find X6", "OPPO Find X7", "OPPO A57", "OPPO A77", "OPPO A97", "OPPO K9", "OPPO K10", "OPPO K11"],
+    vivo: ["vivo S9", "vivo S10", "vivo S12", "vivo S15", "vivo S16", "vivo S17", "vivo S18", "vivo X50", "vivo X60", "vivo X70", "vivo X80", "vivo X90", "vivo X100", "vivo Y55", "vivo Y77", "vivo Y78", "vivo Y100"],
+    一加: ["一加 8", "一加 8 Pro", "一加 9", "一加 9 Pro", "一加 10 Pro", "一加 Ace", "一加 Ace 2", "一加 Ace 3", "一加 11", "一加 12"],
+    真我: ["realme GT", "realme GT Neo", "realme GT Neo2", "realme GT Neo3", "realme GT Neo5", "realme GT Neo6", "realme Q3", "realme Q5", "realme Q5 Pro", "realme 10 Pro", "realme 11 Pro", "realme 12 Pro"],
+    三星: ["Galaxy S20", "Galaxy S21", "Galaxy S22", "Galaxy S23", "Galaxy S24", "Galaxy Note 20", "Galaxy A52", "Galaxy A53", "Galaxy A54", "Galaxy A55", "Galaxy Z Flip3", "Galaxy Z Flip4", "Galaxy Z Flip5", "Galaxy Z Fold3", "Galaxy Z Fold4", "Galaxy Z Fold5"],
+    iQOO: ["iQOO 8", "iQOO 9", "iQOO 10", "iQOO 11", "iQOO 12", "iQOO Neo5", "iQOO Neo6", "iQOO Neo7", "iQOO Neo8", "iQOO Neo9", "iQOO Z6", "iQOO Z7", "iQOO Z8", "iQOO Z9"],
+    魅族: ["魅族 17", "魅族 18", "魅族 18 Pro", "魅族 20", "魅族 20 Pro", "魅族 21", "魅族 21 Pro"],
+    中兴: ["Axon 30", "Axon 40", "Axon 50", "远航 30", "远航 40"],
+    努比亚: ["Z40 Pro", "Z50", "Z50 Ultra", "Z60 Ultra", "红魔 7", "红魔 8 Pro", "红魔 9 Pro"],
+    联想: ["拯救者 Y70", "拯救者 2 Pro"],
+    摩托罗拉: ["moto edge X30", "moto edge X40", "moto edge 40", "moto razr 40", "moto razr 50"],
+    其他: ["手动输入型号"],
+  },
+  storage: {
+    苹果: ["64G", "128G", "256G", "512G", "1TB"],
+    default: ["32G", "64G", "128G", "256G", "512G", "1TB", "4G+64G", "4G+128G", "6G+128G", "8G+128G", "8G+256G", "12G+256G", "12G+512G", "16G+512G", "16G+1TB"],
+  },
+};
+
+const defaultInventory = [
+  {
+    imei: "869302050001245",
+    brand: "Apple",
+    model: "iPhone 15 Pro 256G",
+    color: "原色钛金属",
+    status: "在库",
+    cost: 6850,
+    suggested: 7799,
+    deal: null,
+    customer: "",
+    seller: "",
+  },
+  {
+    imei: "862733060089112",
+    brand: "Huawei",
+    model: "Mate 60 Pro 512G",
+    color: "雅川青",
+    status: "已售",
+    cost: 5890,
+    suggested: 6599,
+    deal: 6680,
+    customer: "陈先生",
+    seller: "staff",
+  },
+  {
+    imei: "861248080032791",
+    brand: "Xiaomi",
+    model: "Xiaomi 14 Ultra 512G",
+    color: "黑色",
+    status: "在库",
+    cost: 4960,
+    suggested: 5799,
+    deal: null,
+    customer: "",
+    seller: "",
+  },
+  {
+    imei: "865429070011903",
+    brand: "OPPO",
+    model: "Find X7 Ultra 256G",
+    color: "海阔天空",
+    status: "已售",
+    cost: 4210,
+    suggested: 4999,
+    deal: 5088,
+    customer: "刘女士",
+    seller: "admin",
+  },
+];
+
+let inventory = loadInventory();
+let catalog = loadCatalog();
+let importMessage = "";
+let outboundMessage = "";
+let inboundDraft = null;
+let inboundMessage = "";
+let salesDetailImei = "";
+let inboundPrefill = {};
+let inventoryDetailImei = "";
+let inventoryEditImei = "";
+let inventoryMessage = "";
+let catalogPrefill = {};
+let resetDataModalOpen = false;
+
+const permissions = {
+  admin: {
+    canSeeCost: true,
+    canSeeSuggestedPrice: true,
+    canSeeDealPrice: true,
+    canSeeProfit: true,
+    canDelete: true,
+    canExport: true,
+    canImport: true,
+    canEdit: true,
+  },
+  staff: {
+    canSeeCost: false,
+    canSeeSuggestedPrice: false,
+    canSeeDealPrice: true,
+    canSeeProfit: false,
+    canDelete: false,
+    canExport: false,
+    canImport: false,
+    canEdit: false,
+  },
+};
+
+const menus = {
+  admin: [
+    ["home", "首页"],
+    ["inbound", "手机入库"],
+    ["inventory", "在库手机"],
+    ["outbound", "手机出库"],
+    ["sales", "销售记录"],
+    ["monthly", "月度统计"],
+    ["yearly", "年度统计"],
+    ["catalog", "品牌型号管理"],
+    ["employees", "员工管理"],
+    ["data", "数据导入导出"],
+  ],
+  staff: [
+    ["home", "首页"],
+    ["outbound", "扫码出库"],
+    ["inventory", "在库查询"],
+    ["sales", "我的销售记录"],
+  ],
+};
+
+const routeRoles = {
+  home: ["admin", "staff"],
+  inbound: ["admin"],
+  inventory: ["admin", "staff"],
+  outbound: ["admin", "staff"],
+  sales: ["admin", "staff"],
+  monthly: ["admin"],
+  yearly: ["admin"],
+  catalog: ["admin"],
+  employees: ["admin"],
+  data: ["admin"],
+};
+
+const app = document.querySelector("#app");
+let loginMode = "qr";
+let qrState = "waiting";
+
+function money(value) {
+  return `¥${Number(value || 0).toLocaleString("zh-CN")}`;
+}
+
+function loadInventory() {
+  const raw = localStorage.getItem(INVENTORY_KEY);
+  if (!raw) return normalizeInventory([...defaultInventory]);
+
+  try {
+    const items = JSON.parse(raw);
+    return Array.isArray(items) ? normalizeInventory(items) : normalizeInventory([...defaultInventory]);
+  } catch {
+    return normalizeInventory([...defaultInventory]);
+  }
+}
+
+function saveInventory() {
+  localStorage.setItem(INVENTORY_KEY, JSON.stringify(inventory));
+}
+
+function normalizeInventory(items) {
+  let changed = false;
+  const normalized = items.map((item) => {
+    if ((item.status === "已售" || item.status === "已出库" || item.saleStatus === "已售出") && !item.soldAt && !item.sold_at) {
+      changed = true;
+      const soldAt = localDateTime();
+      return { ...item, soldAt, soldDate: soldAt.slice(0, 10), soldTime: soldAt.slice(11, 16) };
+    }
+    return item;
+  });
+  if (changed) localStorage.setItem(INVENTORY_KEY, JSON.stringify(normalized));
+  return normalized;
+}
+
+function loadCatalog() {
+  const raw = localStorage.getItem(CATALOG_KEY);
+  if (!raw) return structuredClone(defaultCatalog);
+
+  try {
+    const saved = JSON.parse(raw);
+    const brands = Array.from(new Set([...defaultCatalog.brands, ...(saved.brands || [])]));
+    const models = { ...defaultCatalog.models };
+    Object.entries(saved.models || {}).forEach(([brand, values]) => {
+      models[brand] = Array.from(new Set([...(models[brand] || []), ...values]));
+    });
+    const storage = { ...defaultCatalog.storage };
+    Object.entries(saved.storage || {}).forEach(([key, values]) => {
+      storage[key] = Array.from(new Set([...(storage[key] || []), ...values]));
+    });
+    return { brands, models, storage };
+  } catch {
+    return structuredClone(defaultCatalog);
+  }
+}
+
+function saveCatalog() {
+  localStorage.setItem(CATALOG_KEY, JSON.stringify(catalog));
+}
+
+function getTodaySales() {
+  return saleRecords();
+}
+
+function calcProfit(item) {
+  return Number(item.deal || 0) - Number(item.cost || 0);
+}
+
+function getStats() {
+  const today = localDateTime().slice(0, 10);
+  const currentMonth = new Date().toISOString().slice(0, 7);
+  const currentYear = currentMonth.slice(0, 4);
+  const todayStats = summarizeSales(saleRecords().filter((item) => soldParts(item).date === today));
+  const monthStats = summarizeSales(salesByMonth(currentMonth));
+  const yearStats = summarizeSales(salesByYear(currentYear));
+  const inStock = inventory.filter((item) => item.status === "在库");
+  const stockCost = inStock.reduce((sum, item) => sum + item.cost, 0);
+
+  return {
+    todaySales: todayStats.salesAmount,
+    todayProfit: todayStats.profitAmount,
+    monthSales: monthStats.salesAmount,
+    monthProfit: monthStats.profitAmount,
+    monthSoldCount: monthStats.soldCount,
+    averageProfit: monthStats.averageProfit,
+    averagePrice: monthStats.averagePrice,
+    averageMargin: monthStats.grossMarginRate,
+    yearSales: yearStats.salesAmount,
+    yearProfit: yearStats.profitAmount,
+    yearSoldCount: yearStats.soldCount,
+    stockCount: inStock.length,
+    stockCost,
+  };
+}
+
+function saleRecords() {
+  return inventory
+    .filter((item) => item.status === "已售" || item.status === "已出库" || item.saleStatus === "已售出")
+    .filter((item) => item.deal && soldParts(item).date)
+    .map((item) => ({
+      ...item,
+      salePrice: Number(item.deal || 0),
+      costPrice: Number(item.cost || 0),
+      actualProfit: calcProfit(item),
+    }));
+}
+
+function salesByMonth(month) {
+  return saleRecords().filter((item) => soldParts(item).date >= `${month}-01` && soldParts(item).date < nextMonth(month));
+}
+
+function salesByYear(year) {
+  return saleRecords().filter((item) => soldParts(item).date >= `${year}-01-01` && soldParts(item).date < `${Number(year) + 1}-01-01`);
+}
+
+function nextMonth(month) {
+  const [year, value] = month.split("-").map(Number);
+  const next = value === 12 ? new Date(year + 1, 0, 1) : new Date(year, value, 1);
+  return `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, "0")}-01`;
+}
+
+function summarizeSales(records) {
+  const soldCount = records.length;
+  const salesAmount = records.reduce((sum, item) => sum + Number(item.salePrice || item.deal || 0), 0);
+  const costAmount = records.reduce((sum, item) => sum + Number(item.costPrice || item.cost || 0), 0);
+  const profitAmount = records.reduce((sum, item) => sum + Number(item.actualProfit ?? calcProfit(item)), 0);
+  return {
+    soldCount,
+    salesAmount,
+    costAmount,
+    profitAmount,
+    averageProfit: soldCount ? Math.round(profitAmount / soldCount) : 0,
+    averagePrice: soldCount ? Math.round(salesAmount / soldCount) : 0,
+    grossMarginRate: salesAmount ? Math.round((profitAmount / salesAmount) * 1000) / 10 : 0,
+  };
+}
+
+function localDateTime(date = new Date()) {
+  const pad = (value) => String(value).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+function soldParts(item) {
+  const soldAt = item.soldAt || item.sold_at || "";
+  if (!soldAt) return { full: "-", date: "", time: "" };
+  if (soldAt.includes("T")) {
+    const date = new Date(soldAt);
+    if (!Number.isNaN(date.getTime())) {
+      const full = localDateTime(date);
+      return { full, date: full.slice(0, 10), time: full.slice(11, 16) };
+    }
+  }
+  const full = String(soldAt).slice(0, 16);
+  return { full, date: full.slice(0, 10), time: full.slice(11, 16) };
+}
+
+function optionTags(values, selected = "") {
+  return [`<option value="">请选择</option>`, ...values.map((value) => `<option value="${value}" ${value === selected ? "selected" : ""}>${value}</option>`)].join("");
+}
+
+function storageOptions(brand, model) {
+  return catalog.storage[`${brand}|${model}`] || catalog.storage[brand] || catalog.storage.default;
+}
+
+async function sha256(text) {
+  const data = new TextEncoder().encode(text);
+  const digest = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+function getSession() {
+  const raw = localStorage.getItem(SESSION_KEY);
+  if (!raw) return null;
+
+  try {
+    const session = JSON.parse(raw);
+    if (Date.now() - session.lastActiveAt > SESSION_TTL_MS) {
+      clearSession();
+      return null;
+    }
+    return session;
+  } catch {
+    clearSession();
+    return null;
+  }
+}
+
+function saveSession(user) {
+  localStorage.setItem(
+    SESSION_KEY,
+    JSON.stringify({
+      userId: user.id,
+      role: user.role,
+      loginAt: Date.now(),
+      lastActiveAt: Date.now(),
+    }),
+  );
+}
+
+function touchSession() {
+  const session = getSession();
+  if (!session) return;
+  localStorage.setItem(SESSION_KEY, JSON.stringify({ ...session, lastActiveAt: Date.now() }));
+}
+
+function clearSession() {
+  localStorage.removeItem(SESSION_KEY);
+}
+
+function getCurrentUser() {
+  const session = getSession();
+  if (!session) return null;
+  return users.find((user) => user.id === session.userId) || null;
+}
+
+function loginAs(user) {
+  saveSession(user);
+  window.location.hash = "#/home";
+  render();
+}
+
+async function handlePasswordLogin(event) {
+  event.preventDefault();
+  const form = new FormData(event.currentTarget);
+  const account = String(form.get("account") || "").trim();
+  const password = String(form.get("password") || "");
+  const hash = await sha256(`${PASSWORD_SALT}${password}`);
+  const user = users.find((item) => (item.account === account || item.phone === account) && item.passwordHash === hash);
+
+  if (!user) {
+    document.querySelector("#login-error").textContent = "账号或密码错误，请重新输入。";
+    return;
+  }
+
+  loginAs(user);
+}
+
+function logout() {
+  clearSession();
+  qrState = "waiting";
+  window.location.hash = "#/login";
+  render();
+}
+
+function activeRoute() {
+  const route = window.location.hash.replace("#/", "") || "home";
+  return route.split("?")[0];
+}
+
+function canAccess(route, role) {
+  return Boolean(routeRoles[route]?.includes(role));
+}
+
+function roleName(role) {
+  return role === "admin" ? "老板" : "销售员";
+}
+
+function parseCsv(text) {
+  const rows = [];
+  let field = "";
+  let row = [];
+  let inQuotes = false;
+
+  for (let index = 0; index < text.length; index += 1) {
+    const char = text[index];
+    const next = text[index + 1];
+
+    if (char === '"' && inQuotes && next === '"') {
+      field += '"';
+      index += 1;
+      continue;
+    }
+
+    if (char === '"') {
+      inQuotes = !inQuotes;
+      continue;
+    }
+
+    if (char === "," && !inQuotes) {
+      row.push(field.trim());
+      field = "";
+      continue;
+    }
+
+    if ((char === "\n" || char === "\r") && !inQuotes) {
+      if (char === "\r" && next === "\n") index += 1;
+      row.push(field.trim());
+      if (row.some(Boolean)) rows.push(row);
+      field = "";
+      row = [];
+      continue;
+    }
+
+    field += char;
+  }
+
+  row.push(field.trim());
+  if (row.some(Boolean)) rows.push(row);
+  return rows;
+}
+
+function xmlText(node) {
+  return Array.from(node.getElementsByTagName("t"))
+    .map((item) => item.textContent || "")
+    .join("");
+}
+
+function columnIndex(cellRef) {
+  const letters = String(cellRef || "").match(/[A-Z]+/i)?.[0] || "";
+  return letters
+    .toUpperCase()
+    .split("")
+    .reduce((sum, char) => sum * 26 + char.charCodeAt(0) - 64, 0) - 1;
+}
+
+function readUint16(view, offset) {
+  return view.getUint16(offset, true);
+}
+
+function readUint32(view, offset) {
+  return view.getUint32(offset, true);
+}
+
+function decodeBytes(bytes) {
+  return new TextDecoder("utf-8").decode(bytes);
+}
+
+async function inflateRaw(bytes) {
+  if (!("DecompressionStream" in window)) {
+    throw new Error("当前浏览器不支持直接解压 xlsx，请先另存为 CSV 导入。");
+  }
+
+  const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+  return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+
+async function readZipEntries(arrayBuffer) {
+  const view = new DataView(arrayBuffer);
+  const bytes = new Uint8Array(arrayBuffer);
+  let eocdOffset = -1;
+
+  for (let offset = bytes.length - 22; offset >= Math.max(0, bytes.length - 66000); offset -= 1) {
+    if (readUint32(view, offset) === 0x06054b50) {
+      eocdOffset = offset;
+      break;
+    }
+  }
+
+  if (eocdOffset < 0) throw new Error("无法识别 xlsx 文件结构。");
+
+  const entryCount = readUint16(view, eocdOffset + 10);
+  let centralOffset = readUint32(view, eocdOffset + 16);
+  const entries = new Map();
+
+  for (let index = 0; index < entryCount; index += 1) {
+    if (readUint32(view, centralOffset) !== 0x02014b50) break;
+
+    const method = readUint16(view, centralOffset + 10);
+    const compressedSize = readUint32(view, centralOffset + 20);
+    const fileNameLength = readUint16(view, centralOffset + 28);
+    const extraLength = readUint16(view, centralOffset + 30);
+    const commentLength = readUint16(view, centralOffset + 32);
+    const localOffset = readUint32(view, centralOffset + 42);
+    const nameBytes = bytes.slice(centralOffset + 46, centralOffset + 46 + fileNameLength);
+    const name = decodeBytes(nameBytes);
+
+    const localNameLength = readUint16(view, localOffset + 26);
+    const localExtraLength = readUint16(view, localOffset + 28);
+    const dataOffset = localOffset + 30 + localNameLength + localExtraLength;
+    const compressed = bytes.slice(dataOffset, dataOffset + compressedSize);
+    let content;
+
+    if (method === 0) {
+      content = compressed;
+    } else if (method === 8) {
+      content = await inflateRaw(compressed);
+    } else {
+      throw new Error(`暂不支持 xlsx 内部压缩方式 ${method}。`);
+    }
+
+    entries.set(name, decodeBytes(content));
+    centralOffset += 46 + fileNameLength + extraLength + commentLength;
+  }
+
+  return entries;
+}
+
+function parseSharedStrings(xml) {
+  if (!xml) return [];
+  const doc = new DOMParser().parseFromString(xml, "application/xml");
+  return Array.from(doc.getElementsByTagName("si")).map(xmlText);
+}
+
+function resolveWorksheetPath(entries) {
+  const workbookXml = entries.get("xl/workbook.xml");
+  const relsXml = entries.get("xl/_rels/workbook.xml.rels");
+  if (!workbookXml) return "xl/worksheets/sheet1.xml";
+
+  const workbook = new DOMParser().parseFromString(workbookXml, "application/xml");
+  const firstSheet = workbook.getElementsByTagName("sheet")[0];
+  const relId =
+    firstSheet?.getAttribute("r:id") ||
+    firstSheet?.getAttribute("id") ||
+    firstSheet?.getAttributeNS("http://schemas.openxmlformats.org/officeDocument/2006/relationships", "id");
+
+  if (!relId || !relsXml) return "xl/worksheets/sheet1.xml";
+
+  const rels = new DOMParser().parseFromString(relsXml, "application/xml");
+  const rel = Array.from(rels.getElementsByTagName("Relationship")).find((item) => item.getAttribute("Id") === relId);
+  const target = rel?.getAttribute("Target") || "worksheets/sheet1.xml";
+  return target.startsWith("/") ? target.slice(1) : `xl/${target.replace(/^xl\//, "")}`;
+}
+
+function parseWorksheetRows(xml, sharedStrings) {
+  const doc = new DOMParser().parseFromString(xml, "application/xml");
+  return Array.from(doc.getElementsByTagName("row")).map((rowNode) => {
+    const row = [];
+    Array.from(rowNode.getElementsByTagName("c")).forEach((cell) => {
+      const index = columnIndex(cell.getAttribute("r"));
+      const type = cell.getAttribute("t");
+      const valueNode = cell.getElementsByTagName("v")[0];
+      const inlineNode = cell.getElementsByTagName("is")[0];
+      let value = "";
+
+      if (type === "s") {
+        value = sharedStrings[Number(valueNode?.textContent || 0)] || "";
+      } else if (type === "inlineStr") {
+        value = inlineNode ? xmlText(inlineNode) : "";
+      } else {
+        value = valueNode?.textContent || "";
+      }
+
+      row[index >= 0 ? index : row.length] = value;
+    });
+    return row.map((value) => String(value ?? "").trim());
+  });
+}
+
+async function parseXlsx(arrayBuffer) {
+  const entries = await readZipEntries(arrayBuffer);
+  const worksheetPath = resolveWorksheetPath(entries);
+  const worksheetXml = entries.get(worksheetPath);
+  if (!worksheetXml) throw new Error("没有找到第一个工作表。");
+
+  const sharedStrings = parseSharedStrings(entries.get("xl/sharedStrings.xml"));
+  return parseWorksheetRows(worksheetXml, sharedStrings).filter((row) => row.some(Boolean));
+}
+
+function normalizeHeader(value) {
+  return String(value || "")
+    .replace(/^\uFEFF/, "")
+    .replace(/\s/g, "")
+    .replace(/[()（）/\\:：*?？[\]【】]/g, "")
+    .toLowerCase();
+}
+
+function findColumn(headers, names) {
+  const normalizedNames = names.map(normalizeHeader);
+  return headers.findIndex((header) => {
+    const normalized = normalizeHeader(header);
+    return normalizedNames.some((name) => normalized === name || normalized.includes(name));
+  });
+}
+
+function numberValue(value) {
+  const clean = String(value || "").replace(/[^\d.-]/g, "");
+  return clean ? Number(clean) : 0;
+}
+
+function itemFromCsvRow(headers, row, rowIndex) {
+  const column = {
+    serial: findColumn(headers, ["序号", "编号", "no"]),
+    imei: findColumn(headers, ["imei", "串号", "手机串号", "条码", "编号"]),
+    brand: findColumn(headers, ["品牌", "brand"]),
+    model: findColumn(headers, ["型号", "机型", "model", "手机型号"]),
+    memory: findColumn(headers, ["内存", "容量", "storage"]),
+    version: findColumn(headers, ["版本"]),
+    condition: findColumn(headers, ["成色"]),
+    color: findColumn(headers, ["颜色", "color"]),
+    status: findColumn(headers, ["状态", "库存状态", "status"]),
+    saleStatus: findColumn(headers, ["销售状态"]),
+    cost: findColumn(headers, ["进货价", "成本", "成本价", "cost"]),
+    suggested: findColumn(headers, ["建议售价", "售价", "标价", "suggested", "price"]),
+    deal: findColumn(headers, ["实际成交价", "成交价", "deal"]),
+    customer: findColumn(headers, ["客户信息", "客户", "customer"]),
+    seller: findColumn(headers, ["销售员", "seller"]),
+    remark: findColumn(headers, ["备注", "remark"]),
+  };
+
+  const serial = column.serial >= 0 ? String(row[column.serial] || "").trim() : "";
+  const imei = column.imei >= 0 ? String(row[column.imei] || "").trim() : "";
+  const autoId = serial ? `AUTO-${serial.padStart(4, "0")}` : `AUTO-${String(rowIndex + 1).padStart(4, "0")}`;
+  return {
+    imei: imei || autoId,
+    brand: column.brand >= 0 ? row[column.brand] || "" : "",
+    model: column.model >= 0 ? row[column.model] || "" : "",
+    storage: column.memory >= 0 ? row[column.memory] || "" : "",
+    version: column.version >= 0 ? row[column.version] || "" : "",
+    condition: column.condition >= 0 ? row[column.condition] || "" : "",
+    color: column.color >= 0 ? row[column.color] || "" : "",
+    status:
+      (column.status >= 0 && row[column.status]) ||
+      (column.saleStatus >= 0 && row[column.saleStatus] === "未售出" ? "在库" : "") ||
+      "在库",
+    saleStatus: column.saleStatus >= 0 && row[column.saleStatus] ? row[column.saleStatus] : "未售出",
+    cost: column.cost >= 0 ? numberValue(row[column.cost]) : 0,
+    suggested: column.suggested >= 0 ? numberValue(row[column.suggested]) : 0,
+    deal: column.deal >= 0 && row[column.deal] ? numberValue(row[column.deal]) : null,
+    customer: column.customer >= 0 ? row[column.customer] || "" : "",
+    seller: column.seller >= 0 ? row[column.seller] || "" : "",
+    remark: column.remark >= 0 ? row[column.remark] || "" : "",
+    createdAt: localDateTime(),
+  };
+}
+
+function addToCatalog(item) {
+  const brand = String(item.brand || "").trim();
+  const model = String(item.model || "").trim();
+  const storage = String(item.storage || "").trim();
+  if (brand && !catalog.brands.includes(brand)) catalog.brands.push(brand);
+  if (brand && model) {
+    catalog.models[brand] = catalog.models[brand] || [];
+    if (!catalog.models[brand].includes(model)) catalog.models[brand].push(model);
+  }
+  if (brand && model && storage) {
+    const key = `${brand}|${model}`;
+    catalog.storage[key] = catalog.storage[key] || [];
+    if (!catalog.storage[key].includes(storage)) catalog.storage[key].push(storage);
+  }
+}
+
+function importCsvText(text) {
+  importRows(parseCsv(text));
+}
+
+function importRows(rows) {
+  if (rows.length < 2) {
+    importMessage = "导入失败：表格至少需要一行表头和一行数据。";
+    return;
+  }
+
+  const headers = rows[0];
+  const nextItems = rows.slice(1).map((row, index) => itemFromCsvRow(headers, row, index)).filter(Boolean);
+  if (!nextItems.length) {
+    importMessage = "导入失败：没有识别到可导入的数据行。";
+    return;
+  }
+
+  const byImei = new Map(inventory.map((item) => [item.imei, item]));
+  nextItems.forEach((item) => {
+    addToCatalog(item);
+    byImei.set(item.imei, { ...byImei.get(item.imei), ...item });
+  });
+  inventory = Array.from(byImei.values());
+  saveInventory();
+  saveCatalog();
+  importMessage = `导入成功：新增或更新 ${nextItems.length} 条手机记录。`;
+}
+
+function handleImportFile(event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+
+  const fileName = file.name.toLowerCase();
+  if (!fileName.endsWith(".csv") && !fileName.endsWith(".xlsx")) {
+    importMessage = "请选择 .xlsx 或 .csv 文件。";
+    render();
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = async () => {
+    try {
+      if (fileName.endsWith(".xlsx")) {
+        importRows(await parseXlsx(reader.result));
+      } else {
+        importCsvText(String(reader.result || ""));
+      }
+    } catch (error) {
+      importMessage = error.message || "导入失败，请检查文件格式。";
+    }
+    render();
+  };
+  reader.onerror = () => {
+    importMessage = "文件读取失败，请重新选择文件。";
+    render();
+  };
+  if (fileName.endsWith(".xlsx")) {
+    reader.readAsArrayBuffer(file);
+  } else {
+    reader.readAsText(file, "UTF-8");
+  }
+}
+
+function exportCsv(filename = "手机库存.csv") {
+  const headers = ["IMEI", "品牌", "型号", "内存", "版本", "成色", "颜色", "状态", "销售状态", "进货价", "建议售价", "实际成交价", "实际利润", "付款方式", "客户姓名", "客户电话", "销售员", "出库日期", "出库时间", "完整出库时间", "备注"];
+  const rows = inventory.map((item) => [
+    item.imei,
+    item.brand,
+    item.model,
+    item.storage || "",
+    item.version || "",
+    item.condition || "",
+    item.color,
+    item.status,
+    item.saleStatus || "",
+    item.cost,
+    item.suggested,
+    item.deal || "",
+    item.deal ? calcProfit(item) : "",
+    item.paymentMethod || "",
+    item.customerName || item.customer || "",
+    item.customerPhone || "",
+    item.seller,
+    soldParts(item).date,
+    soldParts(item).time,
+    soldParts(item).full === "-" ? "" : soldParts(item).full,
+    item.remark || "",
+  ]);
+  const csv = [headers, ...rows]
+    .map((row) => row.map((value) => `"${String(value ?? "").replace(/"/g, '""')}"`).join(","))
+    .join("\n");
+  const blob = new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
+function normalizeCode(value) {
+  return String(value || "").trim().toUpperCase();
+}
+
+function handleOutboundSubmit(event) {
+  event.preventDefault();
+  const user = getCurrentUser();
+  if (!user) return;
+
+  const form = new FormData(event.currentTarget);
+  const imei = normalizeCode(form.get("imei"));
+  const deal = numberValue(form.get("deal"));
+  const paymentMethod = String(form.get("paymentMethod") || "").trim();
+  const customerName = String(form.get("customerName") || "").trim();
+  const customerPhone = String(form.get("customerPhone") || "").trim();
+  const customer = [customerName, customerPhone].filter(Boolean).join(" / ");
+
+  if (!imei) {
+    outboundMessage = "出库失败：请先扫码或输入 IMEI / 内部编号。";
+    render();
+    return;
+  }
+
+  if (!deal || deal <= 0) {
+    outboundMessage = "出库失败：请填写实际成交价。";
+    render();
+    return;
+  }
+
+  const item = inventory.find((phone) => normalizeCode(phone.imei) === imei);
+  if (!item) {
+    outboundMessage = `出库失败：没有找到编号 ${imei} 的手机。`;
+    render();
+    return;
+  }
+
+  if (item.status === "已售" || item.status === "已出库") {
+    outboundMessage = `出库失败：${item.imei} 已经出库。`;
+    render();
+    return;
+  }
+
+  const soldAt = localDateTime();
+  inventory = inventory.map((phone) =>
+    normalizeCode(phone.imei) === imei
+      ? {
+          ...phone,
+          status: "已出库",
+          saleStatus: "已售出",
+          deal,
+          customer,
+          customerName,
+          customerPhone,
+          paymentMethod,
+          seller: user.account,
+          soldAt,
+          soldDate: soldAt.slice(0, 10),
+          soldTime: soldAt.slice(11, 16),
+        }
+      : phone,
+  );
+  saveInventory();
+  outboundMessage = `销售成功，该手机已出库。出库时间：${soldAt}。`;
+  render();
+}
+
+function updateInboundPrice() {
+  const cost = numberValue(document.querySelector("#inbound-cost")?.value);
+  const suggestedInput = document.querySelector("#inbound-suggested");
+  const profitInput = document.querySelector("#inbound-profit");
+  if (!suggestedInput || !profitInput) return;
+  if (suggestedInput.dataset.manual !== "true") {
+    suggestedInput.value = cost ? Math.round(cost * 1.3) : "";
+  }
+  const suggested = numberValue(suggestedInput.value);
+  profitInput.value = suggested || cost ? suggested - cost : "";
+}
+
+function markSuggestedManual() {
+  const suggestedInput = document.querySelector("#inbound-suggested");
+  if (suggestedInput) suggestedInput.dataset.manual = "true";
+  updateInboundPrice();
+}
+
+function recalcSuggestedPrice() {
+  const cost = numberValue(document.querySelector("#inbound-cost")?.value);
+  const suggestedInput = document.querySelector("#inbound-suggested");
+  if (!suggestedInput) return;
+  suggestedInput.dataset.manual = "false";
+  suggestedInput.value = cost ? Math.round(cost * 1.3) : "";
+  updateInboundPrice();
+}
+
+function inboundFormData(form) {
+  const data = new FormData(form);
+  const cost = numberValue(data.get("cost"));
+  const suggested = numberValue(data.get("suggested")) || Math.round(cost * 1.3);
+  return {
+    imei: String(data.get("imei") || "").trim(),
+    brand: String(data.get("brand") || "").trim(),
+    model: String(data.get("manualModel") || data.get("model") || "").trim(),
+    storage: String(data.get("storage") || "").trim(),
+    version: String(data.get("version") || "").trim(),
+    condition: String(data.get("condition") || "").trim(),
+    color: String(data.get("color") || "").trim(),
+    cost,
+    suggested,
+    expectedProfit: suggested - cost,
+    status: "在库",
+    saleStatus: "未售出",
+    remark: String(data.get("remark") || "").trim(),
+    createdAt: localDateTime(),
+  };
+}
+
+function handleInboundNext(event) {
+  event.preventDefault();
+  const item = inboundFormData(event.currentTarget);
+  if (!item.imei) {
+    inboundMessage = "请先输入或扫描手机串号 / IMEI。";
+    render();
+    return;
+  }
+  if (!item.brand || !item.model || !item.storage) {
+    inboundMessage = "请选择品牌、型号和内存容量。";
+    render();
+    return;
+  }
+  if (inventory.some((phone) => normalizeCode(phone.imei) === normalizeCode(item.imei) && phone.status === "在库")) {
+    inboundMessage = "该串号已存在，不能重复入库。";
+    render();
+    return;
+  }
+  if (inventory.some((phone) => normalizeCode(phone.imei) === normalizeCode(item.imei) && (phone.status === "已售" || phone.status === "已出库"))) {
+    inboundMessage = "该串号已有历史记录，请谨慎处理。";
+    render();
+    return;
+  }
+  inboundDraft = item;
+  inboundMessage = "";
+  render();
+}
+
+function confirmInbound() {
+  if (!inboundDraft) return;
+  addToCatalog(inboundDraft);
+  inventory = [{ ...inboundDraft }, ...inventory];
+  saveInventory();
+  saveCatalog();
+  inboundDraft = null;
+  inboundMessage = "入库成功，该手机已加入未售出库存。";
+  window.location.hash = "#/inventory";
+  render();
+}
+
+function handleCatalogSubmit(event) {
+  event.preventDefault();
+  const data = new FormData(event.currentTarget);
+  const brand = String(data.get("brand") || "").trim();
+  const model = String(data.get("model") || "").trim();
+  const storage = String(data.get("storage") || "").trim();
+  if (brand && !catalog.brands.includes(brand)) catalog.brands.push(brand);
+  if (brand && model) {
+    catalog.models[brand] = catalog.models[brand] || [];
+    if (!catalog.models[brand].includes(model)) catalog.models[brand].push(model);
+  }
+  if (brand && model && storage) {
+    const key = `${brand}|${model}`;
+    catalog.storage[key] = catalog.storage[key] || [];
+    storage.split(/[，,、\s]+/).filter(Boolean).forEach((value) => {
+      if (!catalog.storage[key].includes(value)) catalog.storage[key].push(value);
+    });
+  }
+  saveCatalog();
+  catalogPrefill = {};
+  importMessage = "保存成功。";
+  render();
+}
+
+function quickAddModel() {
+  const brand = String(document.querySelector("[name='brand']")?.value || "").trim();
+  const model = String(document.querySelector("[name='quickModel']")?.value || "").trim();
+  const storage = String(document.querySelector("[name='quickModelStorage']")?.value || "").trim();
+  if (!brand || !model) {
+    inboundMessage = "请先选择品牌，并输入要新增的型号。";
+    render();
+    return;
+  }
+  catalog.models[brand] = catalog.models[brand] || [];
+  if (!catalog.models[brand].includes(model)) catalog.models[brand].push(model);
+  if (storage) {
+    const key = `${brand}|${model}`;
+    catalog.storage[key] = catalog.storage[key] || [];
+    storage.split(/[，,、\s]+/).filter(Boolean).forEach((value) => {
+      if (!catalog.storage[key].includes(value)) catalog.storage[key].push(value);
+    });
+  }
+  saveCatalog();
+  inboundPrefill = { brand, model };
+  inboundMessage = `已新增型号：${model}`;
+  render();
+}
+
+function quickAddStorage() {
+  const brand = String(document.querySelector("[name='brand']")?.value || "").trim();
+  const model = String(document.querySelector("[name='model']")?.value || "").trim();
+  const storage = String(document.querySelector("[name='quickStorage']")?.value || "").trim();
+  if (!brand || !model || !storage) {
+    inboundMessage = "请先选择品牌和型号，并输入要新增的内存容量。";
+    render();
+    return;
+  }
+  const key = `${brand}|${model}`;
+  catalog.storage[key] = catalog.storage[key] || [];
+  storage.split(/[，,、\s]+/).filter(Boolean).forEach((value) => {
+    if (!catalog.storage[key].includes(value)) catalog.storage[key].push(value);
+  });
+  saveCatalog();
+  inboundPrefill = { brand, model, storage: storage.split(/[，,、\s]+/).filter(Boolean)[0] || "" };
+  inboundMessage = `已新增内存容量：${inboundPrefill.storage}`;
+  render();
+}
+
+function handleCatalogImportFile(event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const rows = parseCsv(String(reader.result || ""));
+    let added = 0;
+    let skipped = 0;
+    rows.slice(1).forEach((row) => {
+      const [brand, model, storage, enabled] = row.map((value) => String(value || "").trim());
+      if (!brand || !model || enabled === "停用") {
+        skipped += 1;
+        return;
+      }
+      const before = JSON.stringify(catalog);
+      if (!catalog.brands.includes(brand)) catalog.brands.push(brand);
+      catalog.models[brand] = catalog.models[brand] || [];
+      if (!catalog.models[brand].includes(model)) catalog.models[brand].push(model);
+      if (storage) {
+        const key = `${brand}|${model}`;
+        catalog.storage[key] = catalog.storage[key] || [];
+        if (!catalog.storage[key].includes(storage)) catalog.storage[key].push(storage);
+      }
+      if (JSON.stringify(catalog) === before) skipped += 1;
+      else added += 1;
+    });
+    saveCatalog();
+    importMessage = `机型库导入完成：成功 ${added} 条，跳过 ${skipped} 条。`;
+    render();
+  };
+  reader.readAsText(file, "UTF-8");
+}
+
+function stopCatalogItem(key) {
+  const [brand, model] = key.split("||");
+  if (!brand) return;
+  if (model) {
+    if (!confirm(`确认停用型号 ${model} 吗？`)) {
+      importMessage = "已取消停用型号。";
+      render();
+      return;
+    }
+    catalog.models[brand] = (catalog.models[brand] || []).filter((item) => item !== model);
+    delete catalog.storage[`${brand}|${model}`];
+    importMessage = `已停用型号：${model}`;
+  } else {
+    if (!confirm(`确认停用品牌 ${brand} 吗？`)) {
+      importMessage = "已取消停用品牌。";
+      render();
+      return;
+    }
+    catalog.brands = catalog.brands.filter((item) => item !== brand);
+    delete catalog.models[brand];
+    importMessage = `已停用品牌：${brand}`;
+  }
+  saveCatalog();
+  render();
+}
+
+function downloadRowsAsCsv(filename, rows) {
+  const csv = rows.map((row) => row.map((value) => `"${String(value ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
+  const isExcel = filename.endsWith(".xls") || filename.endsWith(".xlsx");
+  const content = isExcel
+    ? `<html><head><meta charset="UTF-8">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="手机库存">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0f766e">
+
+  
+<style id="iphone13pm-pwa-fix">
+html, body {
+  width: 100%;
+  min-height: 100%;
+  overscroll-behavior-y: none;
+}
+body {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.app-shell, .main, #app {
+  max-width: 430px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.mobile-bottom-nav,
+.bottom-nav,
+.tabbar,
+.mobile-nav {
+  padding-bottom: calc(10px + env(safe-area-inset-bottom)) !important;
+  z-index: 50 !important;
+}
+.modal-backdrop,
+.modal-sheet,
+.detail-modal,
+.dialog-backdrop {
+  z-index: 9999 !important;
+}
+.modal,
+.sheet,
+.detail-panel,
+.dialog {
+  max-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 20px) !important;
+}
+.modal-actions,
+.sheet-actions,
+.form-actions,
+.sticky-actions {
+  padding-bottom: calc(14px + env(safe-area-inset-bottom)) !important;
+  z-index: 10000 !important;
+}
+</style>
+
+</head><body><table>${rows
+        .map((row) => `<tr>${row.map((value) => `<td>${String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;")}</td>`).join("")}</tr>`)
+        .join("")}</table>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+  });
+}
+</script>
+
+  </body></html>`
+    : `\uFEFF${csv}`;
+  const blob = new Blob([content], { type: isExcel ? "application/vnd.ms-excel;charset=utf-8" : "text/csv;charset=utf-8" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
+function exportYearlyCsv(year, type = "csv") {
+  const records = salesByYear(year);
+  const stats = summarizeSales(records);
+  const rows = [
+    ["年度汇总"],
+    ["年份", "年度卖出台数", "年度销售总额", "年度进货总成本", "年度总利润", "年度平均每台利润", "年度平均售价", "年度平均毛利率"],
+    [year, stats.soldCount, stats.salesAmount, stats.costAmount, stats.profitAmount, stats.averageProfit, stats.averagePrice, `${stats.grossMarginRate}%`],
+    [],
+    ["12个月拆分"],
+    ["月份", "卖出台数", "销售额", "进货成本", "总利润", "平均每台利润", "平均售价", "毛利率"],
+  ];
+  Array.from({ length: 12 }, (_, index) => `${year}-${String(index + 1).padStart(2, "0")}`).forEach((month) => {
+    const item = summarizeSales(salesByMonth(month));
+    rows.push([month, item.soldCount, item.salesAmount, item.costAmount, item.profitAmount, item.averageProfit, item.averagePrice, `${item.grossMarginRate}%`]);
+  });
+  rows.push([], ["全年销售明细"], ["出库时间", "IMEI", "品牌", "型号", "内存", "版本", "成色", "颜色", "实际成交价", "进货成本", "实际利润", "付款方式", "销售员", "客户姓名", "客户电话", "备注"]);
+  records.forEach((item) => {
+    rows.push([soldParts(item).full, item.imei, item.brand, item.model, item.storage || "", item.version || "", item.condition || "", item.color || "", item.salePrice, item.costPrice, item.actualProfit, item.paymentMethod || "", item.seller || "", item.customerName || item.customer || "", item.customerPhone || "", item.remark || ""]);
+  });
+  downloadRowsAsCsv(`年度统计_${year}.${type === "xls" ? "xls" : "csv"}`, rows);
+}
+
+function exportMonthlyCsv(month, type = "csv") {
+  const records = salesByMonth(month);
+  const stats = summarizeSales(records);
+  const rows = [
+    ["月度汇总"],
+    ["月份", "当月卖出台数", "当月销售总额", "当月进货总成本", "当月总利润", "平均每台手机利润", "平均售价", "平均毛利率"],
+    [month, stats.soldCount, stats.salesAmount, stats.costAmount, stats.profitAmount, stats.averageProfit, stats.averagePrice, `${stats.grossMarginRate}%`],
+    [],
+    ["月度销售明细"],
+    ["出库时间", "IMEI", "品牌", "型号", "内存", "版本", "成色", "颜色", "实际成交价", "进货成本", "实际利润", "付款方式", "销售员", "客户姓名", "客户电话", "备注"],
+  ];
+  records.forEach((item) => {
+    rows.push([soldParts(item).full, item.imei, item.brand, item.model, item.storage || "", item.version || "", item.condition || "", item.color || "", item.salePrice, item.costPrice, item.actualProfit, item.paymentMethod || "", item.seller || "", item.customerName || item.customer || "", item.customerPhone || "", item.remark || ""]);
+  });
+  downloadRowsAsCsv(`月度统计_${month}.${type === "xls" ? "xls" : "csv"}`, rows);
+}
+
+function exportSalesCsv(type = "csv") {
+  const user = getCurrentUser();
+  const records = filteredSalesRecords(user);
+  const includeCost = user?.role === "admin";
+  const rows = [
+    includeCost
+      ? ["出库时间", "IMEI", "品牌", "型号", "内存", "版本", "成色", "颜色", "实际成交价", "进货成本", "实际利润", "付款方式", "销售员", "客户姓名", "客户电话", "备注"]
+      : ["出库时间", "IMEI", "品牌", "型号", "内存", "版本", "成色", "颜色", "实际成交价", "付款方式", "销售员", "客户姓名", "客户电话", "备注"],
+  ];
+  records.forEach((item) => {
+    rows.push(
+      includeCost
+        ? [soldParts(item).full, item.imei, item.brand, item.model, item.storage || "", item.version || "", item.condition || "", item.color || "", item.salePrice, item.costPrice, item.actualProfit, item.paymentMethod || "", item.seller || "", item.customerName || item.customer || "", item.customerPhone || "", item.remark || ""]
+        : [soldParts(item).full, item.imei, item.brand, item.model, item.storage || "", item.version || "", item.condition || "", item.color || "", item.salePrice, item.paymentMethod || "", item.seller || "", item.customerName || item.customer || "", item.remark || ""],
+    );
+  });
+  const params = new URLSearchParams(window.location.hash.split("?")[1] || "");
+  const suffix = params.get("month") || params.get("date") || "全部";
+  downloadRowsAsCsv(`销售记录_${suffix}.${type === "xls" ? "xls" : "csv"}`, rows);
+}
+
+function filteredSalesRecords(user = getCurrentUser()) {
+  const params = new URLSearchParams(window.location.hash.split("?")[1] || "");
+  const date = params.get("date") || "";
+  const month = params.get("month") || "";
+  const seller = params.get("seller") || "";
+  return saleRecords()
+    .filter((item) => user?.role === "admin" || item.seller === user?.account)
+    .filter((item) => !date || soldParts(item).date === date)
+    .filter((item) => !month || soldParts(item).date.startsWith(month))
+    .filter((item) => !seller || item.seller === seller);
+}
+
+function searchKey(value) {
+  return String(value || "").toLowerCase().replace(/\s+/g, "");
+}
+
+function modelInventoryMatches(keyword) {
+  const key = searchKey(keyword);
+  if (!key) return [];
+  return inventory.filter((item) =>
+    [item.imei, item.brand, item.model, item.storage, item.condition, item.color].some((value) => searchKey(value).includes(key)),
+  );
+}
+
+function modelInventorySummary(records) {
+  const inStock = records.filter((item) => item.status === "在库");
+  const sold = records.filter((item) => item.status !== "在库" || item.saleStatus === "已售出");
+  return {
+    total: records.length,
+    inStock: inStock.length,
+    sold: sold.length,
+    totalCost: records.reduce((sum, item) => sum + Number(item.cost || 0), 0),
+    inStockCost: inStock.reduce((sum, item) => sum + Number(item.cost || 0), 0),
+    soldSales: sold.reduce((sum, item) => sum + Number(item.deal || 0), 0),
+    soldProfit: sold.reduce((sum, item) => sum + calcProfit(item), 0),
+  };
+}
+
+function closeCurrentModal() {
+  if (resetDataModalOpen) {
+    resetDataModalOpen = false;
+    render();
+    return;
+  }
+  if (inboundDraft) {
+    if (!confirm("当前内容尚未保存，确定关闭吗？")) return;
+    inboundDraft = null;
+  }
+  if (inventoryEditImei && !confirm("当前内容尚未保存，确定关闭吗？")) return;
+  salesDetailImei = "";
+  inventoryDetailImei = "";
+  inventoryEditImei = "";
+  render();
+}
+
+function updateOutboundLookup() {
+  const code = normalizeCode(document.querySelector("#outbound-imei")?.value);
+  const panel = document.querySelector("#outbound-lookup");
+  const user = getCurrentUser();
+  if (!panel || !user) return;
+  if (!code) {
+    panel.innerHTML = `<div class="empty-state">扫码或输入串号后，这里会显示手机信息。</div>`;
+    return;
+  }
+
+  const item = inventory.find((phone) => normalizeCode(phone.imei) === code);
+  if (!item) {
+    panel.innerHTML = `<div class="notice">没有找到该手机，请核对串号 / IMEI。</div>`;
+    return;
+  }
+
+  const rule = permissions[user.role];
+  panel.innerHTML = `
+    <div class="lookup-grid">
+      <div><span>状态</span><strong>${statusTag(item.status === "已售" || item.status === "已出库" ? "已售出" : item.status)}</strong></div>
+      <div><span>品牌型号</span><strong>${item.brand || "-"} ${item.model || "-"}</strong></div>
+      <div><span>内存 / 版本 / 成色</span><strong>${[item.storage, item.version, item.condition].filter(Boolean).join(" / ") || "-"}</strong></div>
+      <div><span>颜色</span><strong>${item.color || "-"}</strong></div>
+      <div><span>建议售价</span><strong>${money(item.suggested)} <small>仅供参考</small></strong></div>
+      ${rule.canSeeCost ? `<div><span>进货价</span><strong>${money(item.cost)}</strong></div><div><span>预计利润</span><strong>${money(Number(item.suggested || 0) - Number(item.cost || 0))}</strong></div>` : ""}
+    </div>
+    ${item.status === "已售" || item.status === "已出库" ? `<div class="notice">该手机已售出，不能重复出库。</div>` : ""}
+  `;
+}
+
+function statusTag(status) {
+  const cls = status === "在库" ? "green" : status === "未售出" ? "blue" : status === "待补录串号" ? "orange" : "gray";
+  return `<span class="status-tag ${cls}">${status || "-"}</span>`;
+}
+
+function escCloseModal(event) {
+  if (event.key === "Escape" && document.querySelector(".modal-backdrop")) {
+    closeCurrentModal();
+  }
+}
+
+function deleteInventoryItem(imei) {
+  const item = inventory.find((phone) => phone.imei === imei);
+  if (!item) {
+    inventoryMessage = "数据不存在或已被删除。";
+    render();
+    return;
+  }
+  if (!confirm(`确认删除 ${item.brand || ""} ${item.model || ""}（${item.imei}）吗？`)) {
+    inventoryMessage = "已取消删除。";
+    render();
+    return;
+  }
+  inventory = inventory.filter((phone) => phone.imei !== imei);
+  saveInventory();
+  inventoryDetailImei = "";
+  inventoryEditImei = "";
+  inventoryMessage = "删除成功。";
+  render();
+}
+
+
+function openDeleteAllDataModal() {
+  resetDataModalOpen = true;
+  render();
+}
+
+function closeDeleteAllDataModal() {
+  resetDataModalOpen = false;
+  render();
+}
+
+function confirmDeleteAllData() {
+  const input = String(document.querySelector("#delete-all-confirm-input")?.value || "").trim();
+  if (input !== "确认删除") {
+    alert("请输入：确认删除，才能清空全部数据。");
+    return;
+  }
+
+  inventory = [];
+  catalog = structuredClone(defaultCatalog);
+  inboundDraft = null;
+  inboundMessage = "";
+  outboundMessage = "";
+  salesDetailImei = "";
+  inventoryDetailImei = "";
+  inventoryEditImei = "";
+  inventoryMessage = "";
+  inboundPrefill = {};
+  catalogPrefill = {};
+  importMessage = "已删除全部业务数据：库存、销售记录、导入数据和自定义品牌型号已清空。内置基础品牌型号库已恢复。";
+
+  localStorage.setItem(INVENTORY_KEY, JSON.stringify([]));
+  localStorage.removeItem(CATALOG_KEY);
+  resetDataModalOpen = false;
+  window.location.hash = "#/data";
+  render();
+}
+
+function renderDeleteAllDataModal() {
+  if (!resetDataModalOpen) return "";
+  return `
+    <div class="modal-backdrop" data-delete-all-backdrop>
+      <div class="modal">
+        <div class="section-head">
+          <h2>确认删除全部数据</h2>
+          <button class="icon-close" data-cancel-delete-all type="button">×</button>
+        </div>
+        <div class="reset-warning-card">
+          这是高危操作。确认后会清空当前浏览器里的库存数据、销售记录、导入数据和自定义品牌型号库。系统程序和登录账号不会被删除，内置基础品牌型号库会恢复。
+        </div>
+        <div class="confirm-list" style="grid-template-columns:1fr;">
+          <div>
+            <span>清空范围</span>
+            <strong>库存记录 / 销售记录 / 导入数据 / 自定义品牌型号</strong>
+          </div>
+          <div>
+            <span>安全确认</span>
+            <strong>请在下面输入：确认删除</strong>
+            <input id="delete-all-confirm-input" class="reset-confirm-input" placeholder="请输入：确认删除" autocomplete="off" />
+          </div>
+        </div>
+        <div class="section-head modal-actions">
+          <button class="secondary-btn" data-cancel-delete-all type="button">取消</button>
+          <button class="danger-btn" data-confirm-delete-all type="button">删除全部数据</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function handleInventoryEditSave(event) {
+  event.preventDefault();
+  const data = new FormData(event.currentTarget);
+  const originalImei = String(data.get("originalImei") || "").trim();
+  const imei = String(data.get("imei") || "").trim();
+  const cost = numberValue(data.get("cost"));
+  const suggested = numberValue(data.get("suggested"));
+
+  if (!imei) {
+    inventoryMessage = "保存失败：串号不能为空。";
+    render();
+    return;
+  }
+  if (inventory.some((item) => item.imei !== originalImei && normalizeCode(item.imei) === normalizeCode(imei))) {
+    inventoryMessage = "保存失败：串号已存在。";
+    render();
+    return;
+  }
+  if (!String(data.get("brand") || "").trim() || !String(data.get("model") || "").trim()) {
+    inventoryMessage = "保存失败：请选择品牌和型号。";
+    render();
+    return;
+  }
+  inventory = inventory.map((item) =>
+    item.imei === originalImei
+      ? {
+          ...item,
+          imei,
+          brand: String(data.get("brand") || "").trim(),
+          model: String(data.get("model") || "").trim(),
+          storage: String(data.get("storage") || "").trim(),
+          version: String(data.get("version") || "").trim(),
+          condition: String(data.get("condition") || "").trim(),
+          color: String(data.get("color") || "").trim(),
+          cost,
+          suggested,
+          remark: String(data.get("remark") || "").trim(),
+          updatedAt: localDateTime(),
+        }
+      : item,
+  );
+  saveInventory();
+  const updated = inventory.find((item) => item.imei === imei);
+  if (updated) addToCatalog(updated);
+  saveCatalog();
+  inventoryDetailImei = imei;
+  inventoryEditImei = "";
+  inventoryMessage = "保存成功。";
+  render();
+}
+
+function renderLogin() {
+  app.innerHTML = `
+    <main class="login-shell">
+      <section class="login-brand">
+        <div>
+          <h1 class="brand-title">手机库存进销存管理系统</h1>
+          <p class="brand-copy">登录后按角色进入对应工作台，老板查看经营全貌，销售员专注扫码查询和出库。</p>
+        </div>
+        <div class="brand-metrics">
+          <div class="brand-metric"><strong>2</strong><span>角色权限</span></div>
+          <div class="brand-metric"><strong>30 分钟</strong><span>无操作自动退出</span></div>
+          <div class="brand-metric"><strong>SHA-256</strong><span>密码哈希保存</span></div>
+        </div>
+      </section>
+      <section class="login-panel-wrap">
+        <div class="login-panel">
+          <h2>系统登录</h2>
+          <p class="subtle">请选择扫码登录或账号密码登录。</p>
+          <div class="tabs">
+            <button class="tab ${loginMode === "qr" ? "active" : ""}" data-login-mode="qr">扫码登录</button>
+            <button class="tab ${loginMode === "password" ? "active" : ""}" data-login-mode="password">账号密码</button>
+          </div>
+          ${
+            loginMode === "qr"
+              ? `
+                <div class="login-section qr-login">
+                  <div class="qr-code" aria-label="登录二维码"></div>
+                  <div>
+                    <div class="qr-status"><span class="qr-dot"></span>${qrState === "confirmed" ? "手机端已确认" : "等待手机扫码确认"}</div>
+                    <p class="subtle">电脑端后台打开后显示二维码。用户用手机扫码并确认后，系统会按身份进入对应工作台。</p>
+                    <div class="role-choice">
+                      <button class="primary-btn" data-qr-login="admin">模拟老板确认</button>
+                      <button class="secondary-btn" data-qr-login="staff">模拟销售员确认</button>
+                    </div>
+                  </div>
+                </div>
+              `
+              : `
+                <form class="login-section" id="password-login-form">
+                  <div class="field">
+                    <label for="account">账号 / 手机号</label>
+                    <input id="account" name="account" autocomplete="username" placeholder="请输入账号或手机号" />
+                  </div>
+                  <div class="field">
+                    <label for="password">密码</label>
+                    <input id="password" name="password" type="password" autocomplete="current-password" placeholder="请输入密码" />
+                  </div>
+                  <button class="primary-btn full" type="submit">登录</button>
+                  <p class="error" id="login-error"></p>
+                  <div class="demo-users">演示账号：admin / admin123；staff / staff123。系统配置中只保存哈希值，不保存明文密码。</div>
+                </form>
+              `
+          }
+        </div>
+      </section>
+    </main>
+  `;
+
+  document.querySelectorAll("[data-login-mode]").forEach((button) => {
+    button.addEventListener("click", () => {
+      loginMode = button.dataset.loginMode;
+      renderLogin();
+    });
+  });
+
+  document.querySelectorAll("[data-qr-login]").forEach((button) => {
+    button.addEventListener("click", () => {
+      qrState = "confirmed";
+      const user = users.find((item) => item.role === button.dataset.qrLogin);
+      setTimeout(() => loginAs(user), 450);
+      renderLogin();
+    });
+  });
+
+  document.querySelector("#password-login-form")?.addEventListener("submit", handlePasswordLogin);
+}
+
+function renderApp(user) {
+  const route = activeRoute();
+  if (!canAccess(route, user.role)) {
+    window.location.hash = "#/home";
+    return;
+  }
+
+  const menu = menus[user.role];
+  app.innerHTML = `
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="side-brand">
+          <strong>手机进销存</strong>
+          <span>${roleName(user.role)}工作台</span>
+        </div>
+        <nav class="nav">
+          ${menu
+            .map(
+              ([key, label]) =>
+                `<button class="${route === key ? "active" : ""}" data-route="${key}">${label}</button>`,
+            )
+            .join("")}
+          <button data-logout>退出登录</button>
+        </nav>
+        <div class="user-box">
+          当前账号：${user.account}<br />
+          角色：${roleName(user.role)}<br />
+          登录状态：已保存
+        </div>
+      </aside>
+      <main class="main">
+        <div class="mobile-top">
+          <div class="section-head card">
+            <strong>手机进销存</strong>
+            <button class="secondary-btn" data-logout>退出</button>
+          </div>
+        </div>
+        ${renderPage(route, user)}
+      </main>
+    </div>
+  `;
+
+  document.querySelectorAll("[data-route]").forEach((button) => {
+    button.addEventListener("click", () => {
+      window.location.hash = `#/${button.dataset.route}`;
+    });
+  });
+
+  document.querySelectorAll("[data-logout]").forEach((button) => {
+    button.addEventListener("click", logout);
+  });
+
+  document.querySelectorAll("[data-import-trigger]").forEach((button) => {
+    button.addEventListener("click", () => document.querySelector("#csv-import-input")?.click());
+  });
+
+  document.querySelector("#csv-import-input")?.addEventListener("change", handleImportFile);
+
+  document.querySelectorAll("[data-export-csv]").forEach((button) => {
+    button.addEventListener("click", exportCsv);
+  });
+  document.querySelectorAll("[data-export-excel]").forEach((button) => {
+    button.addEventListener("click", () => exportCsv("手机库存.xls"));
+  });
+
+  document.querySelectorAll("[data-open-delete-all]").forEach((button) => {
+    button.addEventListener("click", openDeleteAllDataModal);
+  });
+  document.querySelectorAll("[data-cancel-delete-all]").forEach((button) => {
+    button.addEventListener("click", closeDeleteAllDataModal);
+  });
+  document.querySelector("[data-confirm-delete-all]")?.addEventListener("click", confirmDeleteAllData);
+  document.querySelector("[data-delete-all-backdrop]")?.addEventListener("click", (event) => {
+    if (event.target === event.currentTarget) closeDeleteAllDataModal();
+  });
+
+  document.querySelector("#outbound-form")?.addEventListener("submit", handleOutboundSubmit);
+  document.querySelector("#inbound-form")?.addEventListener("submit", handleInboundNext);
+  document.querySelector("#inbound-brand")?.addEventListener("change", () => {
+    inboundPrefill = {};
+    render();
+  });
+  document.querySelector("#inbound-model")?.addEventListener("change", () => {
+    inboundPrefill = {};
+    render();
+  });
+  document.querySelector("#inbound-cost")?.addEventListener("input", updateInboundPrice);
+  document.querySelector("#inbound-suggested")?.addEventListener("input", markSuggestedManual);
+  document.querySelector("[data-recalc-suggested]")?.addEventListener("click", recalcSuggestedPrice);
+  document.querySelector("#outbound-imei")?.addEventListener("input", updateOutboundLookup);
+  document.querySelector("[data-quick-model]")?.addEventListener("click", quickAddModel);
+  document.querySelector("[data-quick-storage]")?.addEventListener("click", quickAddStorage);
+  document.querySelector("[data-confirm-inbound]")?.addEventListener("click", confirmInbound);
+  document.querySelector("[data-back-inbound]")?.addEventListener("click", () => {
+    inboundDraft = null;
+    render();
+  });
+  document.querySelector("#catalog-form")?.addEventListener("submit", handleCatalogSubmit);
+  document.querySelector("[data-catalog-import-trigger]")?.addEventListener("click", () => document.querySelector("#catalog-import-input")?.click());
+  document.querySelector("#catalog-import-input")?.addEventListener("change", handleCatalogImportFile);
+  document.querySelector("[data-export-yearly]")?.addEventListener("click", (event) => exportYearlyCsv(event.currentTarget.dataset.exportYearly));
+  document.querySelector("[data-export-yearly-excel]")?.addEventListener("click", (event) => exportYearlyCsv(event.currentTarget.dataset.exportYearlyExcel, "xls"));
+  document.querySelector("[data-export-monthly]")?.addEventListener("click", (event) => exportMonthlyCsv(event.currentTarget.dataset.exportMonthly));
+  document.querySelector("[data-export-monthly-excel]")?.addEventListener("click", (event) => exportMonthlyCsv(event.currentTarget.dataset.exportMonthlyExcel, "xls"));
+  document.querySelector("[data-export-sales]")?.addEventListener("click", () => exportSalesCsv());
+  document.querySelector("[data-export-sales-excel]")?.addEventListener("click", () => exportSalesCsv("xls"));
+  document.querySelectorAll("[data-catalog-edit]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const [brand, model] = button.dataset.catalogEdit.split("||");
+      catalogPrefill = {
+        brand: brand || "",
+        model: model || "",
+        storage: (catalog.storage[`${brand}|${model}`] || []).join("、"),
+      };
+      importMessage = "已载入编辑内容，修改后点击保存到型号库。";
+      render();
+    });
+  });
+  document.querySelectorAll("[data-catalog-stop]").forEach((button) => {
+    button.addEventListener("click", () => stopCatalogItem(button.dataset.catalogStop));
+  });
+  document.querySelectorAll("[data-inventory-detail]").forEach((button) => {
+    button.addEventListener("click", () => {
+      inventoryDetailImei = button.dataset.inventoryDetail;
+      inventoryEditImei = "";
+      render();
+    });
+  });
+  document.querySelectorAll("[data-inventory-edit]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const item = inventory.find((phone) => phone.imei === button.dataset.inventoryEdit);
+      if (item?.status === "已出库" && !confirm("该手机已售出，修改信息可能影响历史记录，是否继续？")) return;
+      inventoryDetailImei = button.dataset.inventoryEdit;
+      inventoryEditImei = button.dataset.inventoryEdit;
+      render();
+    });
+  });
+  document.querySelectorAll("[data-inventory-delete]").forEach((button) => {
+    button.addEventListener("click", () => deleteInventoryItem(button.dataset.inventoryDelete));
+  });
+  document.querySelector("#inventory-edit-form")?.addEventListener("submit", handleInventoryEditSave);
+  document.querySelector("[data-cancel-inventory-edit]")?.addEventListener("click", () => {
+    inventoryEditImei = "";
+    inventoryMessage = "已取消编辑。";
+    render();
+  });
+  document.querySelector("[data-close-inventory-detail]")?.addEventListener("click", () => {
+    if (inventoryEditImei && !confirm("当前内容尚未保存，确定关闭吗？")) return;
+    inventoryDetailImei = "";
+    inventoryEditImei = "";
+    render();
+  });
+  document.querySelector("[data-cancel-outbound]")?.addEventListener("click", () => {
+    outboundMessage = "已取消出库，未修改库存状态。";
+    render();
+  });
+  document.querySelectorAll("[data-sale-detail]").forEach((button) => {
+    button.addEventListener("click", () => {
+      salesDetailImei = button.dataset.saleDetail;
+      render();
+    });
+  });
+  document.querySelector("[data-close-detail]")?.addEventListener("click", () => {
+    salesDetailImei = "";
+    render();
+  });
+  document.querySelectorAll("[data-close-modal]").forEach((button) => {
+    button.addEventListener("click", closeCurrentModal);
+  });
+  document.querySelectorAll(".modal-backdrop").forEach((backdrop) => {
+    backdrop.addEventListener("click", (event) => {
+      if (event.target === backdrop) closeCurrentModal();
+    });
+  });
+}
+
+function renderPage(route, user) {
+  const titles = {
+    home: user.role === "admin" ? "老板工作台" : "销售工作台",
+    inbound: "手机入库",
+    inventory: user.role === "admin" ? "在库手机" : "在库查询",
+    outbound: user.role === "admin" ? "手机出库" : "扫码出库",
+    sales: user.role === "admin" ? "销售记录" : "我的销售记录",
+    monthly: "月度统计",
+    yearly: "年度统计",
+    catalog: "品牌型号管理",
+    employees: "员工管理",
+    data: "数据导入导出",
+  };
+
+  return `
+    <header class="topbar">
+      <div>
+        <h1>${titles[route]}</h1>
+        <p class="subtle">${roleName(user.role)}账号已按权限加载页面。</p>
+      </div>
+      <span class="badge">${user.account}</span>
+    </header>
+    ${renderRouteContent(route, user)}
+  `;
+}
+
+function renderRouteContent(route, user) {
+  if (route === "home") return user.role === "admin" ? renderAdminDashboard() : renderStaffDashboard(user);
+  if (route === "inventory") return renderInventory(user);
+  if (route === "outbound") return renderOutbound(user);
+  if (route === "sales") return renderSales(user);
+  if (route === "inbound") return renderInbound();
+  if (route === "monthly") return renderMonthly();
+  if (route === "yearly") return renderYearly();
+  if (route === "catalog") return renderCatalog();
+  if (route === "employees") return renderEmployees();
+  if (route === "data") return renderData();
+  return "";
+}
+
+function renderAdminDashboard() {
+  const stats = getStats();
+  return `
+    <section class="quick-actions">
+      <button class="primary-btn" data-route="inbound">新增入库</button>
+      <button class="secondary-btn" data-route="outbound">扫码出库</button>
+      <button class="secondary-btn" data-route="inventory">在库查询</button>
+      <button class="secondary-btn" data-route="sales">销售记录</button>
+      <button class="secondary-btn" data-route="monthly">月度统计</button>
+      <button class="secondary-btn" data-route="yearly">年度统计</button>
+    </section>
+    <section class="grid">
+      ${metric("今日销售额", money(stats.todaySales))}
+      ${metric("今日利润", money(stats.todayProfit))}
+      ${metric("本月销售额", money(stats.monthSales))}
+      ${metric("本月利润", money(stats.monthProfit))}
+      ${metric("本月卖出台数", `${stats.monthSoldCount} 台`)}
+      ${metric("平均每台手机利润", money(stats.averageProfit))}
+      ${metric("本年销售额", money(stats.yearSales))}
+      ${metric("本年利润", money(stats.yearProfit))}
+      ${metric("本年卖出台数", `${stats.yearSoldCount} 台`)}
+      ${metric("当前在库数量", `${stats.stockCount} 台`)}
+      ${metric("当前库存总成本", money(stats.stockCost))}
+    </section>
+    ${renderInventory(users[0])}
+  `;
+}
+
+function renderStaffDashboard(user) {
+  return `
+    <section class="quick-actions">
+      <button class="primary-btn" data-route="outbound">扫码出库</button>
+      <button class="secondary-btn" data-route="inventory">在库查询</button>
+      <button class="secondary-btn" data-route="sales">我的销售记录</button>
+    </section>
+    <section class="grid">
+      <div class="card">
+        <span class="metric-label">扫码出库</span>
+        <strong class="metric-value">待扫码</strong>
+      </div>
+      <div class="card">
+        <span class="metric-label">在库手机查询</span>
+        <strong class="metric-value">${inventory.filter((item) => item.status === "在库").length} 台</strong>
+      </div>
+      <div class="card">
+        <span class="metric-label">今日个人销售记录</span>
+        <strong class="metric-value">${inventory.filter((item) => item.seller === user.account).length} 单</strong>
+      </div>
+    </section>
+    ${renderOutbound(user)}
+    ${renderSales(user)}
+  `;
+}
+
+function metric(label, value) {
+  return `
+    <div class="card">
+      <span class="metric-label">${label}</span>
+      <strong class="metric-value">${value}</strong>
+    </div>
+  `;
+}
+
+function renderInventory(user) {
+  const rule = permissions[user.role];
+  const params = new URLSearchParams(window.location.hash.split("?")[1] || "");
+  const keyword = params.get("q") || "";
+  const status = params.get("status") || "在库";
+  const rows = inventory
+    .filter((item) => !status || item.status === status)
+    .filter((item) => !keyword || [item.imei, item.brand, item.model, item.storage, item.color].some((value) => String(value || "").toLowerCase().includes(keyword.toLowerCase())))
+    .map(
+      (item) => `
+        <tr>
+          <td>${item.imei}</td>
+          <td>${item.brand}</td>
+          <td>${item.model}</td>
+          <td>${item.storage || "-"}</td>
+          <td>${item.color}</td>
+          ${rule.canSeeCost ? `<td>${money(item.cost)}</td>` : ""}
+          ${rule.canSeeSuggestedPrice ? `<td>${money(item.suggested)}</td>` : ""}
+          ${rule.canSeeProfit ? `<td>${money(item.suggested - item.cost)}</td>` : ""}
+          <td>${statusTag(item.status)}</td>
+          <td>
+            <div class="action-row">
+              <button class="secondary-btn" data-inventory-detail="${item.imei}">查看详情</button>
+              <button class="secondary-btn" data-route="outbound">扫码出库</button>
+              ${rule.canEdit ? `<button class="secondary-btn" data-inventory-edit="${item.imei}">编辑</button>` : ""}
+              ${rule.canDelete ? `<button class="danger-btn" data-inventory-delete="${item.imei}">删除</button>` : ""}
+            </div>
+          </td>
+        </tr>
+      `,
+    )
+    .join("");
+
+  return `
+    <form class="section filter-bar" onsubmit="event.preventDefault(); window.location.hash = '#/inventory?' + new URLSearchParams(new FormData(this)).toString()">
+      <div class="field"><label>搜索</label><input name="q" value="${keyword}" placeholder="IMEI / 品牌 / 型号 / 颜色" /></div>
+      <div class="field"><label>状态</label><select name="status">${optionTags(["在库", "已出库", "已售"], status)}</select></div>
+      <button class="primary-btn" type="submit">搜索</button>
+      <button class="secondary-btn" type="button" data-route="inventory">重置</button>
+    </form>
+    <section class="section">
+      <div class="section-head">
+        <h2>在库手机</h2>
+        <div class="action-row">
+          ${rule.canImport ? `<button class="secondary-btn" data-import-trigger>导入 Excel / CSV</button>` : ""}
+          ${rule.canExport ? `<button class="secondary-btn" data-export-csv>导出 CSV</button>` : ""}
+          ${rule.canExport ? `<button class="secondary-btn" data-export-excel>导出Excel</button>` : ""}
+        </div>
+      </div>
+      ${inventoryMessage ? `<div class="import-box"><span class="import-message">${inventoryMessage}</span></div>` : ""}
+      ${rule.canImport ? renderImportTools() : ""}
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>IMEI</th>
+              <th>品牌</th>
+              <th>型号</th>
+              <th>内存</th>
+              <th>颜色</th>
+              ${rule.canSeeCost ? `<th>进货价</th>` : ""}
+              ${rule.canSeeSuggestedPrice ? `<th>建议售价</th>` : ""}
+              ${rule.canSeeProfit ? `<th>预估利润</th>` : ""}
+              <th>状态</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </section>
+    ${inventoryDetailImei ? renderInventoryDetail(user) : ""}
+  `;
+}
+
+function renderInventoryDetail(user) {
+  const item = inventory.find((phone) => phone.imei === inventoryDetailImei);
+  if (!item) return "";
+  const rule = permissions[user.role];
+  const isEditing = inventoryEditImei === item.imei && rule.canEdit;
+  const fromCatalog = activeRoute() === "catalog";
+  const versions = ["国行", "港版", "美版", "日版", "韩版", "欧版", "其他"];
+  const conditions = ["全新", "99新", "98新", "97新", "95新", "9成新", "8成新", "其他"];
+  const fields = [
+    ["串号/IMEI", item.imei],
+    ["品牌", item.brand],
+    ["型号", item.model],
+    ["内存", item.storage || "-"],
+    ["版本", item.version || "-"],
+    ["成色", item.condition || "-"],
+    ["颜色", item.color || "-"],
+    ...(rule.canSeeCost ? [["进货价", money(item.cost)]] : []),
+    ...(!fromCatalog && rule.canSeeSuggestedPrice ? [["建议售价", money(item.suggested)]] : []),
+    ...(!fromCatalog && rule.canSeeProfit ? [["预计利润", money(Number(item.suggested || 0) - Number(item.cost || 0))]] : []),
+    ["库存状态", item.status],
+    ["销售状态", item.saleStatus || (item.status === "在库" ? "未售出" : "已售出")],
+    ["备注", item.remark || "-"],
+  ];
+
+  return `
+    <div class="modal-backdrop">
+      <section class="modal">
+        <div class="section-head">
+          <h2>${isEditing ? "编辑库存" : "库存详情"}</h2>
+          <button class="icon-close" data-close-inventory-detail aria-label="关闭">×</button>
+        </div>
+        ${
+          isEditing
+            ? `
+              <form id="inventory-edit-form">
+                <input type="hidden" name="originalImei" value="${item.imei}" />
+                <div class="form-grid">
+                  <div class="field"><label>串号/IMEI</label><input name="imei" value="${item.imei}" /></div>
+                  <div class="field"><label>品牌</label><input name="brand" list="edit-brand-options" value="${item.brand || ""}" /><datalist id="edit-brand-options">${catalog.brands.map((brand) => `<option value="${brand}"></option>`).join("")}</datalist></div>
+                  <div class="field"><label>型号</label><input name="model" value="${item.model || ""}" /></div>
+                  <div class="field"><label>内存</label><input name="storage" value="${item.storage || ""}" /></div>
+                  <div class="field"><label>版本</label><select name="version">${optionTags(versions, item.version || "")}</select></div>
+                  <div class="field"><label>成色</label><select name="condition">${optionTags(conditions, item.condition || "")}</select></div>
+                  <div class="field"><label>颜色</label><input name="color" value="${item.color || ""}" /></div>
+                  <div class="field"><label>进货价</label><input name="cost" type="number" min="0" step="1" value="${item.cost || 0}" /></div>
+                  ${fromCatalog ? `<input type="hidden" name="suggested" value="${item.suggested || 0}" />` : `<div class="field"><label>建议售价</label><input name="suggested" type="number" min="0" step="1" value="${item.suggested || 0}" /></div>`}
+                  <div class="field"><label>备注</label><input name="remark" value="${item.remark || ""}" /></div>
+                </div>
+                <div class="section-head">
+                  <div class="action-row">
+                    <button class="secondary-btn" type="button" data-cancel-inventory-edit>取消</button>
+                    <button class="primary-btn" type="submit">保存</button>
+                  </div>
+                </div>
+              </form>
+            `
+            : `
+              <div class="confirm-list">
+                ${fields.map(([label, value]) => `<div><span>${label}</span><strong>${value}</strong></div>`).join("")}
+              </div>
+              <div class="section-head">
+                <div class="action-row">
+                  ${rule.canEdit ? `<button class="secondary-btn" data-inventory-edit="${item.imei}">编辑</button>` : ""}
+                  ${rule.canDelete ? `<button class="danger-btn" data-inventory-delete="${item.imei}">删除</button>` : ""}
+                  <button class="secondary-btn" data-close-inventory-detail>关闭</button>
+                </div>
+              </div>
+            `
+        }
+      </section>
+    </div>
+  `;
+}
+
+function renderOutbound(user) {
+  const recentSales = getTodaySales()
+    .filter((item) => user.role === "admin" || item.seller === user.account)
+    .slice(-5)
+    .reverse();
+
+  return `
+    <section class="section">
+      <div class="section-head">
+        <h2>扫码出库</h2>
+        <span class="badge">${roleName(user.role)}可用</span>
+      </div>
+      <form id="outbound-form">
+      <div class="form-grid">
+        <div class="field">
+          <label>扫码 / 输入 IMEI 或内部编号</label>
+          <input id="outbound-imei" name="imei" placeholder="请输入或扫描要出库的手机串号/IMEI" autocomplete="off" />
+        </div>
+        <div class="field">
+          <label>实际成交价</label>
+          <input name="deal" type="number" min="1" step="1" placeholder="请输入成交价" />
+        </div>
+        <div class="field">
+          <label>付款方式</label>
+          <select name="paymentMethod">${optionTags(["现金", "微信", "支付宝", "银行卡", "其他"])}</select>
+        </div>
+        <div class="field">
+          <label>客户姓名</label>
+          <input name="customerName" placeholder="客户姓名" />
+        </div>
+        <div class="field">
+          <label>客户电话</label>
+          <input name="customerPhone" placeholder="客户电话" />
+        </div>
+      </div>
+      <div id="outbound-lookup" class="lookup-box">
+        <div class="empty-state">扫码或输入串号后，这里会显示手机信息。</div>
+      </div>
+      <div class="section-head">
+        <div class="action-row">
+          <button class="secondary-btn" type="button" data-cancel-outbound>取消出库</button>
+          <button class="primary-btn" type="submit">确认销售</button>
+        </div>
+        ${outboundMessage ? `<span class="import-message">${outboundMessage}</span>` : ""}
+      </div>
+      </form>
+    </section>
+    <section class="section">
+      <div class="section-head">
+        <h2>最近出库记录</h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>编号</th>
+              <th>型号</th>
+              <th>客户</th>
+              <th>销售员</th>
+              <th>成交价</th>
+              <th>完整出库时间</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${
+              recentSales.length
+                ? recentSales
+                    .map(
+                      (item) => `
+                        <tr>
+                          <td>${item.imei}</td>
+                          <td>${item.brand} ${item.model}</td>
+                          <td>${item.customer || "-"}</td>
+                          <td>${item.seller || "-"}</td>
+                          <td>${money(item.deal)}</td>
+                          <td>${soldParts(item).full}</td>
+                        </tr>
+                      `,
+                    )
+                    .join("")
+                : `<tr><td colspan="6">暂无出库记录</td></tr>`
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  `;
+}
+
+function renderSales(user) {
+  const rule = permissions[user.role];
+  const params = new URLSearchParams(window.location.hash.split("?")[1] || "");
+  const date = params.get("date") || "";
+  const month = params.get("month") || "";
+  const seller = params.get("seller") || "";
+  const sales = filteredSalesRecords(user);
+  const rows = sales
+    .map(
+      (item) => `
+        <tr>
+          <td>${item.imei}</td>
+          <td>${item.brand}</td>
+          <td>${item.model}</td>
+          <td>${item.storage || "-"}</td>
+          <td>${item.condition || "-"}</td>
+          <td>${item.customer || "-"}</td>
+          <td>${item.seller || "-"}</td>
+          ${rule.canSeeDealPrice ? `<td>${money(item.deal)}</td>` : ""}
+          ${rule.canSeeProfit ? `<td>${money(calcProfit(item))}</td>` : ""}
+          <td>${item.paymentMethod || "-"}</td>
+          <td>${soldParts(item).date || "-"}</td>
+          <td>${soldParts(item).time || "-"}</td>
+          <td>${soldParts(item).full}</td>
+          <td><button class="secondary-btn" data-sale-detail="${item.imei}">查看出库详情</button></td>
+        </tr>
+      `,
+    )
+    .join("");
+  const detail = inventory.find((item) => item.imei === salesDetailImei);
+
+  return `
+    <form class="section filter-bar" id="sales-filter-form" onsubmit="event.preventDefault(); window.location.hash = '#/sales?' + new URLSearchParams(new FormData(this)).toString()">
+      <div class="field"><label>按日期筛选</label><input name="date" type="date" value="${date}" /></div>
+      <div class="field"><label>按月份筛选</label><input name="month" type="month" value="${month}" /></div>
+      ${
+        user.role === "admin"
+          ? `<div class="field"><label>销售员</label><select name="seller">${optionTags(["admin", "staff"], seller)}</select></div>`
+          : `<input type="hidden" name="seller" value="${user.account}" />`
+      }
+      <button class="primary-btn" type="submit">查看销售记录</button>
+    </form>
+    <section class="section">
+      <div class="section-head">
+        <h2>${user.role === "admin" ? "销售记录" : "今日个人销售记录"}</h2>
+        ${
+          user.role === "admin"
+            ? `<div class="action-row"><button class="secondary-btn" data-export-sales>导出CSV</button><button class="secondary-btn" data-export-sales-excel>导出Excel</button></div>`
+            : ""
+        }
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>IMEI</th>
+              <th>品牌</th>
+              <th>型号</th>
+              <th>内存</th>
+              <th>成色</th>
+              <th>客户</th>
+              <th>销售员</th>
+              ${rule.canSeeDealPrice ? `<th>实际成交价</th>` : ""}
+              ${rule.canSeeProfit ? `<th>利润</th>` : ""}
+              <th>付款方式</th>
+              <th>出库日期</th>
+              <th>出库时间</th>
+              <th>完整出库时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>${rows || `<tr><td colspan="14">暂无记录</td></tr>`}</tbody>
+        </table>
+      </div>
+    </section>
+    ${detail ? renderSaleDetail(detail, user) : ""}
+  `;
+}
+
+function renderInbound() {
+  const old = (name) => inboundPrefill[name] || document.querySelector(`[name="${name}"]`)?.value || "";
+  const selectedBrand = old("brand");
+  const selectedModel = old("model");
+  const models = selectedBrand ? catalog.models[selectedBrand] || ["手动输入型号"] : [];
+  const storages = selectedBrand && selectedModel ? storageOptions(selectedBrand, selectedModel) : catalog.storage.default;
+  const versions = ["国行", "港版", "美版", "日版", "韩版", "欧版", "其他"];
+  const conditions = ["全新", "99新", "98新", "97新", "95新", "9成新", "8成新", "其他"];
+  const colors = ["黑色", "白色", "蓝色", "红色", "金色", "银色", "紫色", "绿色", "粉色", "灰色", "星光色", "暗夜色", "其他"];
+  return `
+    <section class="section">
+      <div class="section-head">
+        <h2>新增入库</h2>
+      </div>
+      <form id="inbound-form">
+        <div class="form-grid">
+          <div class="field"><label>手机串号/IMEI</label><input name="imei" placeholder="请输入或扫描手机串号" autocomplete="off" value="${old("imei")}" /></div>
+          <div class="field"><label>品牌</label><select id="inbound-brand" name="brand">${optionTags(catalog.brands, selectedBrand)}</select></div>
+          <div class="field"><label>型号</label><input id="inbound-model" list="model-options" name="model" placeholder="输入关键词搜索型号" value="${selectedModel}" /><datalist id="model-options">${models.map((model) => `<option value="${model}"></option>`).join("")}</datalist></div>
+          ${selectedBrand === "其他" || selectedModel === "手动输入型号" ? `<div class="field"><label>手动输入型号</label><input name="manualModel" placeholder="请输入型号" value="${old("manualModel")}" /></div>` : ""}
+          <div class="field"><label>内存容量</label><input list="storage-options" name="storage" placeholder="输入关键词搜索内存" value="${old("storage")}" /><datalist id="storage-options">${storages.map((storage) => `<option value="${storage}"></option>`).join("")}</datalist></div>
+          <div class="field"><label>版本</label><select name="version">${optionTags(versions, old("version"))}</select></div>
+          <div class="field"><label>成色</label><select name="condition">${optionTags(conditions, old("condition"))}</select></div>
+          <div class="field"><label>颜色</label><input list="color-options" name="color" placeholder="颜色" value="${old("color")}" /><datalist id="color-options">${colors.map((color) => `<option value="${color}"></option>`).join("")}</datalist></div>
+          <div class="field"><label>进货价</label><input id="inbound-cost" name="cost" type="number" min="1" step="1" placeholder="进货价" value="${old("cost")}" /></div>
+          <div class="field"><label>建议售价</label><input id="inbound-suggested" name="suggested" type="number" min="1" step="1" placeholder="自动生成，可手动修改" value="${old("suggested")}" /><small>建议售价仅供参考，可手动修改。</small></div>
+          <div class="field"><label>预计利润</label><input id="inbound-profit" readonly placeholder="自动计算" value="${old("profit")}" /></div>
+          <div class="field"><label>备注</label><input name="remark" placeholder="备注" value="${old("remark")}" /></div>
+        </div>
+        <div class="quick-add-panel">
+          <div class="field"><label>找不到型号？</label><input name="quickModel" placeholder="输入新型号名称" /></div>
+          <div class="field"><label>该型号可选内存</label><input name="quickModelStorage" placeholder="如 128G、256G，可用逗号分隔" /></div>
+          <button class="secondary-btn" type="button" data-quick-model>新增型号并选中</button>
+          <div class="field"><label>找不到内存？</label><input name="quickStorage" placeholder="输入新内存容量" /></div>
+          <button class="secondary-btn" type="button" data-quick-storage>新增内存容量并选中</button>
+        </div>
+        <div class="section-head">
+          <div class="action-row">
+            <button class="secondary-btn" type="button" data-recalc-suggested>按30%重新计算建议售价</button>
+            <button class="primary-btn" type="submit">下一步</button>
+          </div>
+          ${inboundMessage ? `<span class="import-message">${inboundMessage}</span>` : ""}
+        </div>
+      </form>
+    </section>
+    ${inboundDraft ? renderInboundConfirm() : ""}
+  `;
+}
+
+function renderInboundConfirm() {
+  const rows = [
+    ["串号/IMEI", inboundDraft.imei],
+    ["品牌", inboundDraft.brand],
+    ["型号", inboundDraft.model],
+    ["内存容量", inboundDraft.storage],
+    ["版本", inboundDraft.version],
+    ["成色", inboundDraft.condition],
+    ["颜色", inboundDraft.color],
+    ["进货价", money(inboundDraft.cost)],
+    ["建议售价", money(inboundDraft.suggested)],
+    ["预计利润", money(inboundDraft.expectedProfit)],
+    ["库存状态", "在库"],
+    ["销售状态", "未售出"],
+    ["备注", inboundDraft.remark || "-"],
+  ];
+  return `
+    <div class="modal-backdrop">
+      <section class="modal">
+        <div class="section-head">
+          <h2>确认入库信息</h2>
+          <button class="icon-close" data-close-modal aria-label="关闭">×</button>
+        </div>
+        <div class="confirm-list">
+          ${rows.map(([label, value]) => `<div><span>${label}</span><strong>${value}</strong></div>`).join("")}
+        </div>
+        <div class="section-head">
+          <div class="action-row">
+            <button class="secondary-btn" data-back-inbound>返回修改</button>
+            <button class="secondary-btn" data-close-modal>关闭</button>
+            <button class="primary-btn" data-confirm-inbound>确认入库</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  `;
+}
+
+function renderSaleDetail(item, user) {
+  const parts = soldParts(item);
+  const rows = [
+    ["手机串号/IMEI", item.imei],
+    ["品牌", item.brand],
+    ["型号", item.model],
+    ["内存", item.storage || "-"],
+    ["版本", item.version || "-"],
+    ["成色", item.condition || "-"],
+    ["颜色", item.color || "-"],
+    ...(user.role === "admin" ? [["进货价", money(item.cost)], ["建议售价", money(item.suggested)], ["实际利润", money(calcProfit(item))]] : []),
+    ["实际成交价", money(item.deal)],
+    ["付款方式", item.paymentMethod || "-"],
+    ["客户姓名", item.customerName || item.customer || "-"],
+    ["客户电话", item.customerPhone || "-"],
+    ["销售员", item.seller || "-"],
+    ["出库日期", parts.date || "-"],
+    ["出库时间", parts.time || "-"],
+    ["完整出库时间", parts.full],
+    ["备注", item.remark || "-"],
+  ];
+  return `
+    <div class="modal-backdrop">
+      <section class="modal">
+        <div class="section-head">
+          <h2>出库详情</h2>
+          <button class="icon-close" data-close-modal aria-label="关闭">×</button>
+        </div>
+        <div class="confirm-list">
+          ${rows.map(([label, value]) => `<div><span>${label}</span><strong>${value}</strong></div>`).join("")}
+        </div>
+        <div class="section-head">
+          <button class="secondary-btn" data-close-modal>关闭</button>
+        </div>
+      </section>
+    </div>
+  `;
+}
+
+function renderMonthly() {
+  const params = new URLSearchParams(window.location.hash.split("?")[1] || "");
+  const month = params.get("month") || localDateTime().slice(0, 7);
+  const records = salesByMonth(month);
+  const stats = summarizeSales(records);
+  return `
+    <form class="section filter-bar" onsubmit="event.preventDefault(); window.location.hash = '#/monthly?' + new URLSearchParams(new FormData(this)).toString()">
+      <div class="field"><label>统计月份</label><input type="month" name="month" value="${month}" /></div>
+      <button class="primary-btn" type="submit">刷新统计</button>
+      <button class="secondary-btn" type="button" data-route="yearly">查看年度统计</button>
+      <button class="secondary-btn" type="button" data-export-monthly="${month}">导出CSV</button>
+      <button class="secondary-btn" type="button" data-export-monthly-excel="${month}">导出Excel</button>
+    </form>
+    <section class="grid">
+      ${metric("当月销售额", money(stats.salesAmount))}
+      ${metric("当月进货成本", money(stats.costAmount))}
+      ${metric("当月总利润", money(stats.profitAmount))}
+      ${metric("当月卖出台数", `${stats.soldCount} 台`)}
+      ${metric("平均每台利润", money(stats.averageProfit))}
+      ${metric("平均售价", money(stats.averagePrice))}
+      ${metric("平均毛利率", `${stats.grossMarginRate}%`)}
+    </section>
+    <section class="section">
+      <div class="section-head"><h2>${month} 销售明细</h2></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>出库时间</th><th>IMEI</th><th>品牌</th><th>型号</th><th>内存</th><th>版本</th><th>成色</th><th>实际成交价</th><th>进货价</th><th>实际利润</th><th>付款方式</th><th>销售员</th></tr></thead>
+          <tbody>
+            ${
+              records.length
+                ? records.map((item) => `<tr><td>${soldParts(item).full}</td><td>${item.imei}</td><td>${item.brand}</td><td>${item.model}</td><td>${item.storage || "-"}</td><td>${item.version || "-"}</td><td>${item.condition || "-"}</td><td>${money(item.salePrice)}</td><td>${money(item.costPrice)}</td><td>${money(item.actualProfit)}</td><td>${item.paymentMethod || "-"}</td><td>${item.seller || "-"}</td></tr>`).join("")
+                : `<tr><td colspan="12">本月暂无销售记录</td></tr>`
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  `;
+}
+
+function renderYearly() {
+  const params = new URLSearchParams(window.location.hash.split("?")[1] || "");
+  const year = params.get("year") || localDateTime().slice(0, 4);
+  const records = salesByYear(year);
+  const stats = summarizeSales(records);
+  const inStock = inventory.filter((item) => item.status === "在库");
+  const monthlyBreakdown = Array.from({ length: 12 }, (_, index) => {
+    const month = `${year}-${String(index + 1).padStart(2, "0")}`;
+    return { month, ...summarizeSales(salesByMonth(month)) };
+  });
+  const exportRows = monthlyBreakdown.map((item) => [item.month, item.soldCount, item.salesAmount, item.costAmount, item.profitAmount, item.averageProfit, item.averagePrice, `${item.grossMarginRate}%`]);
+  return `
+    <form class="section filter-bar" onsubmit="event.preventDefault(); window.location.hash = '#/yearly?' + new URLSearchParams(new FormData(this)).toString()">
+      <div class="field"><label>统计年份</label><input type="number" name="year" min="2000" max="2100" value="${year}" /></div>
+      <button class="primary-btn" type="submit">刷新统计</button>
+      <button class="secondary-btn" type="button" data-export-yearly="${year}">导出CSV</button>
+      <button class="secondary-btn" type="button" data-export-yearly-excel="${year}">导出Excel</button>
+    </form>
+    <section class="grid">
+      ${metric("年度销售总额", money(stats.salesAmount))}
+      ${metric("年度进货总成本", money(stats.costAmount))}
+      ${metric("年度总利润", money(stats.profitAmount))}
+      ${metric("年度卖出台数", `${stats.soldCount} 台`)}
+      ${metric("年度平均每台利润", money(stats.averageProfit))}
+      ${metric("年度平均售价", money(stats.averagePrice))}
+      ${metric("年度平均毛利率", `${stats.grossMarginRate}%`)}
+      ${metric("当前剩余库存数量", `${inStock.length} 台`)}
+      ${metric("当前库存总成本", money(inStock.reduce((sum, item) => sum + Number(item.cost || 0), 0)))}
+    </section>
+    <section class="section">
+      <div class="section-head"><h2>${year} 年 12 个月拆分</h2></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>月份</th><th>卖出台数</th><th>销售额</th><th>进货成本</th><th>总利润</th><th>平均每台利润</th><th>平均售价</th><th>毛利率</th><th>操作</th></tr></thead>
+          <tbody>
+            ${monthlyBreakdown.map((item) => `<tr><td>${item.month}</td><td>${item.soldCount}</td><td>${money(item.salesAmount)}</td><td>${money(item.costAmount)}</td><td>${money(item.profitAmount)}</td><td>${money(item.averageProfit)}</td><td>${money(item.averagePrice)}</td><td>${item.grossMarginRate}%</td><td><button class="secondary-btn" data-route="monthly?month=${item.month}">查看明细</button></td></tr>`).join("")}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  `;
+}
+
+function renderCatalog() {
+  const params = new URLSearchParams(window.location.hash.split("?")[1] || "");
+  const keyword = params.get("q") || "";
+  const stockKeyword = params.get("stockQ") || "";
+  const stockStatus = params.get("stockStatus") || "";
+  const stockRecords = modelInventoryMatches(stockKeyword).filter((item) => !stockStatus || item.status === stockStatus || item.saleStatus === stockStatus);
+  const stockSummary = modelInventorySummary(stockRecords);
+  const groups = Object.values(
+    stockRecords.reduce((acc, item) => {
+      const key = `${item.brand || "-"} ${item.model || "-"}`;
+      acc[key] = acc[key] || { label: key, total: 0, inStock: 0, sold: 0 };
+      acc[key].total += 1;
+      if (item.status === "在库") acc[key].inStock += 1;
+      else acc[key].sold += 1;
+      return acc;
+    }, {}),
+  );
+  return `
+    <section class="section">
+      <div class="section-head">
+        <h2>品牌型号与库存管理</h2>
+        <div class="action-row">
+          <button class="secondary-btn" data-catalog-import-trigger>导入品牌型号库CSV</button>
+          <input id="catalog-import-input" type="file" accept=".csv,text/csv" hidden />
+        </div>
+      </div>
+      <form id="catalog-form" class="form-grid">
+        <div class="field"><label>品牌名称</label><input id="catalog-brand-input" name="brand" placeholder="例如 苹果" value="${catalogPrefill.brand || ""}" /></div>
+        <div class="field"><label>型号名称</label><input id="catalog-model-input" name="model" placeholder="例如 iPhone 16 Pro" value="${catalogPrefill.model || ""}" /></div>
+        <div class="field"><label>内存容量</label><input id="catalog-storage-input" name="storage" placeholder="例如 256G 或 12G+512G" value="${catalogPrefill.storage || ""}" /></div>
+        <button class="primary-btn" type="submit">保存到型号库</button>
+      </form>
+      ${importMessage ? `<div class="import-box"><span class="import-message">${importMessage}</span></div>` : ""}
+    </section>
+    <form class="section filter-bar" onsubmit="event.preventDefault(); window.location.hash = '#/catalog?' + new URLSearchParams(new FormData(this)).toString()">
+      <div class="field"><label>搜索品牌 / 型号</label><input name="q" value="${keyword}" placeholder="例如 iPhone 13 或 Mate" /></div>
+      <input type="hidden" name="stockQ" value="${stockKeyword}" />
+      <input type="hidden" name="stockStatus" value="${stockStatus}" />
+      <button class="primary-btn" type="submit">搜索</button>
+      <button class="secondary-btn" type="button" onclick="window.location.hash='#/catalog'">重置</button>
+    </form>
+    <section class="section">
+      <div class="section-head"><h2>当前型号库</h2></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>品牌</th><th>型号</th><th>容量</th><th>操作</th></tr></thead>
+          <tbody>
+            ${catalog.brands
+              .filter((brand) => !keyword || brand.includes(keyword) || (catalog.models[brand] || []).some((model) => model.toLowerCase().includes(keyword.toLowerCase())))
+              .map((brand) => {
+                const models = (catalog.models[brand] || []).filter((model) => !keyword || brand.includes(keyword) || model.toLowerCase().includes(keyword.toLowerCase()));
+                return models.length
+                  ? models.map((model) => `<tr><td>${brand}</td><td>${model}</td><td>${(catalog.storage[`${brand}|${model}`] || catalog.storage[brand] || []).join("、") || "通用容量"}</td><td><div class="action-row"><button class="secondary-btn" data-catalog-edit="${brand}||${model}">编辑</button><button class="danger-btn" data-catalog-stop="${brand}||${model}">停用</button></div></td></tr>`).join("")
+                  : `<tr><td>${brand}</td><td>-</td><td>-</td><td><button class="danger-btn" data-catalog-stop="${brand}||">停用品牌</button></td></tr>`;
+              })
+              .join("")}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <form class="section filter-bar" onsubmit="event.preventDefault(); window.location.hash = '#/catalog?' + new URLSearchParams(new FormData(this)).toString()">
+      <input type="hidden" name="q" value="${keyword}" />
+      <div class="field"><label>库存机型搜索</label><input name="stockQ" value="${stockKeyword}" placeholder="请输入品牌、型号或关键词，例如 iPhone13、Mate60、Reno8" /></div>
+      <div class="field"><label>状态筛选</label><select name="stockStatus">${optionTags(["在库", "已出库", "已售出"], stockStatus)}</select></div>
+      <button class="primary-btn" type="submit">搜索库存</button>
+      <button class="secondary-btn" type="button" onclick="window.location.hash='#/catalog'">重置</button>
+    </form>
+    ${stockKeyword ? renderCatalogInventoryResults(stockKeyword, stockRecords, stockSummary, groups) : ""}
+  `;
+}
+
+function renderCatalogInventoryResults(keyword, records, summary, groups) {
+  return `
+    <section class="grid">
+      ${metric("匹配总台数", `${summary.total} 台`)}
+      ${metric("在库台数", `${summary.inStock} 台`)}
+      ${metric("已售出台数", `${summary.sold} 台`)}
+      ${metric("总入库成本", money(summary.totalCost))}
+      ${metric("在库总成本", money(summary.inStockCost))}
+      ${metric("已售出销售额", money(summary.soldSales))}
+      ${metric("已售出利润", money(summary.soldProfit))}
+    </section>
+    <section class="section">
+      <div class="section-head"><h2>“${keyword}” 型号分组</h2></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>型号</th><th>总数量</th><th>在库</th><th>已售出</th></tr></thead>
+          <tbody>${groups.length ? groups.map((group) => `<tr><td>${group.label}</td><td>${group.total}</td><td>${group.inStock}</td><td>${group.sold}</td></tr>`).join("") : `<tr><td colspan="4">未找到相关库存，请检查关键词或先新增库存。</td></tr>`}</tbody>
+        </table>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-head"><h2>库存明细</h2></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>IMEI</th><th>品牌</th><th>型号</th><th>内存</th><th>版本</th><th>成色</th><th>颜色</th><th>入库成本价</th><th>库存状态</th><th>销售状态</th><th>入库时间</th><th>出库时间</th><th>操作</th></tr></thead>
+          <tbody>
+            ${
+              records.length
+                ? records
+                    .map(
+                      (item) => `
+                        <tr>
+                          <td>${item.imei}</td>
+                          <td>${item.brand || "-"}</td>
+                          <td>${item.model || "-"}</td>
+                          <td>${item.storage || "-"}</td>
+                          <td>${item.version || "-"}</td>
+                          <td>${item.condition || "-"}</td>
+                          <td>${item.color || "-"}</td>
+                          <td>${money(item.cost)}</td>
+                          <td>${statusTag(item.status)}</td>
+                          <td>${statusTag(item.saleStatus || (item.status === "在库" ? "未售出" : "已售出"))}</td>
+                          <td>${item.createdAt || "-"}</td>
+                          <td>${soldParts(item).full}</td>
+                          <td><div class="action-row"><button class="secondary-btn" data-inventory-detail="${item.imei}">查看详情</button><button class="secondary-btn" data-inventory-edit="${item.imei}">编辑</button>${item.status === "在库" ? `<button class="secondary-btn" data-route="outbound">出库</button>` : ""}<button class="danger-btn" data-inventory-delete="${item.imei}">删除</button></div></td>
+                        </tr>
+                      `,
+                    )
+                    .join("")
+                : `<tr><td colspan="13">未找到相关库存，请检查关键词或先新增库存。</td></tr>`
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  `;
+}
+
+function renderEmployees() {
+  return `
+    <section class="section">
+      <div class="section-head"><h2>员工管理</h2><button class="primary-btn">新增员工</button></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>账号</th><th>手机号</th><th>角色</th><th>权限</th></tr></thead>
+          <tbody>
+            ${users.map((user) => `<tr><td>${user.account}</td><td>${user.phone}</td><td>${roleName(user.role)}</td><td>${menus[user.role].map(([, label]) => label).join("、")}</td></tr>`).join("")}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  `;
+}
+
+function renderData() {
+  const totalCount = inventory.length;
+  const soldCount = saleRecords().length;
+  const stockCount = inventory.filter((item) => item.status === "在库").length;
+  return `
+    <section class="section">
+      <div class="section-head"><h2>数据导入导出</h2></div>
+      <div class="empty-state">
+        <div class="notice">仅老板账号可以导入 xlsx / CSV，并导出数据。删除全部数据属于高危操作，需要二次确认。</div>
+        ${renderImportTools()}
+        <div class="action-row" style="justify-content:center">
+          <button class="secondary-btn" data-import-trigger>导入 Excel / CSV</button>
+          <button class="primary-btn" data-export-csv>导出 CSV</button>
+          <button class="secondary-btn" data-export-excel>导出 Excel</button>
+        </div>
+        <div class="danger-zone">
+          <h3>危险操作：删除全部数据</h3>
+          <p>当前共有 ${totalCount} 台手机记录，其中在库 ${stockCount} 台，已售出 ${soldCount} 台。点击后会清空库存、销售记录、导入数据和自定义品牌型号库。此操作不可恢复。</p>
+          <button class="danger-btn full" data-open-delete-all type="button">删除全部数据</button>
+        </div>
+      </div>
+    </section>
+    ${renderDeleteAllDataModal()}
+  `;
+}
+
+function renderImportTools() {
+  return `
+    <div class="import-box">
+      <input id="csv-import-input" type="file" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" hidden />
+      <div>
+        <strong>Excel / CSV 表头支持</strong>
+        <p>IMEI / 串号、品牌、型号、颜色、状态、进货价、建议售价、实际成交价、客户信息、销售员。</p>
+      </div>
+      ${importMessage ? `<span class="import-message">${importMessage}</span>` : ""}
+    </div>
+  `;
+}
+
+function render() {
+  const user = getCurrentUser();
+  const route = activeRoute();
+
+  if (!user) {
+    if (route !== "login") window.location.hash = "#/login";
+    renderLogin();
+    return;
+  }
+
+  if (route === "login") {
+    window.location.hash = "#/home";
+    return;
+  }
+
+  touchSession();
+  renderApp(user);
+}
+
+window.addEventListener("hashchange", render);
+window.addEventListener("keydown", escCloseModal);
+["click", "keydown", "mousemove", "touchstart"].forEach((eventName) => {
+  window.addEventListener(eventName, touchSession, { passive: true });
+});
+setInterval(() => {
+  if (!getCurrentUser() && activeRoute() !== "login") render();
+}, 60 * 1000);
+
+
+/* === 手机端功能修复覆盖层 V1.9 === */
+const MOBILE_NAV = {
+  admin: [
+    ["home", "首页", "⌂"],
+    ["inbound", "入库", "+"],
+    ["outbound", "出库", "⇄"],
+    ["inventory", "库存", "▦"],
+    ["monthly", "统计", "◇"],
+  ],
+  staff: [
+    ["home", "首页", "⌂"],
+    ["outbound", "出库", "⇄"],
+    ["inventory", "库存", "▦"],
+    ["sales", "记录", "◎"],
+  ],
+};
+
+function escapeHtmlMobile(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function mobileTitle(route, user) {
+  const titles = {
+    home: user.role === "admin" ? "老板工作台" : "销售工作台",
+    inbound: "扫码入库",
+    inventory: "库存查询",
+    outbound: "扫码出库",
+    sales: "销售记录",
+    monthly: "销售统计",
+    yearly: "年度统计",
+    catalog: "品牌型号与库存",
+    employees: "员工管理",
+    data: "数据导入导出",
+  };
+  return titles[route] || "手机进销存";
+}
+
+function mobileBackButton(route) {
+  return route === "home" ? "" : `<button class="secondary-btn" data-route="home">返回</button>`;
+}
+
+renderApp = function(user) {
+  const route = activeRoute();
+  if (!canAccess(route, user.role)) {
+    window.location.hash = "#/home";
+    return;
+  }
+  const nav = MOBILE_NAV[user.role] || MOBILE_NAV.staff;
+  app.innerHTML = `
+    <div class="app-shell">
+      <main class="main">
+        <header class="mobile-appbar">
+          <div class="mobile-appbar-row">
+            <div>
+              <h1 class="mobile-title">${mobileTitle(route, user)}</h1>
+              <p class="mobile-subtitle">${roleName(user.role)}账号：${user.account}</p>
+            </div>
+            <div class="action-row" style="width:auto;grid-template-columns:auto auto;">
+              ${mobileBackButton(route)}
+              <button class="secondary-btn" data-logout>退出</button>
+            </div>
+          </div>
+        </header>
+        ${renderRouteContent(route, user)}
+      </main>
+      <nav class="mobile-bottom-nav">
+        ${nav
+          .map(
+            ([key, label, icon]) =>
+              `<button class="${route === key || (key === "monthly" && route === "yearly") ? "active" : ""}" data-route="${key}"><strong>${icon}</strong><span>${label}</span></button>`,
+          )
+          .join("")}
+      </nav>
+    </div>
+  `;
+
+  bindMobileEvents();
+}
+
+function bindMobileEvents() {
+  document.querySelectorAll("[data-route]").forEach((button) => {
+    button.addEventListener("click", () => {
+      window.location.hash = `#/${button.dataset.route}`;
+    });
+  });
+
+  document.querySelectorAll("[data-logout]").forEach((button) => button.addEventListener("click", logout));
+  document.querySelectorAll("[data-import-trigger]").forEach((button) => button.addEventListener("click", () => document.querySelector("#csv-import-input")?.click()));
+  document.querySelector("#csv-import-input")?.addEventListener("change", handleImportFile);
+  document.querySelectorAll("[data-export-csv]").forEach((button) => button.addEventListener("click", () => exportCsv("手机库存.csv")));
+  document.querySelectorAll("[data-export-excel]").forEach((button) => button.addEventListener("click", () => exportInventoryExcel()));
+
+  document.querySelectorAll("[data-open-delete-all]").forEach((button) => {
+    button.addEventListener("click", openDeleteAllDataModal);
+  });
+  document.querySelectorAll("[data-cancel-delete-all]").forEach((button) => {
+    button.addEventListener("click", closeDeleteAllDataModal);
+  });
+  document.querySelector("[data-confirm-delete-all]")?.addEventListener("click", confirmDeleteAllData);
+  document.querySelector("[data-delete-all-backdrop]")?.addEventListener("click", (event) => {
+    if (event.target === event.currentTarget) closeDeleteAllDataModal();
+  });
+
+  document.querySelector("#outbound-form")?.addEventListener("submit", handleOutboundSubmit);
+  document.querySelector("#outbound-filter-form")?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    window.location.hash = "#/outbound?" + new URLSearchParams(new FormData(event.currentTarget)).toString();
+  });
+  document.querySelector("[data-export-outbound]")?.addEventListener("click", () => exportOutboundRecords("csv"));
+  document.querySelector("[data-export-outbound-excel]")?.addEventListener("click", () => exportOutboundRecords("xlsx"));
+
+  document.querySelector("#inbound-form")?.addEventListener("submit", handleInboundNext);
+  document.querySelector("#inbound-brand")?.addEventListener("change", () => { inboundPrefill = {}; render(); });
+  document.querySelector("#inbound-model")?.addEventListener("change", () => { inboundPrefill = {}; render(); });
+  document.querySelector("#inbound-cost")?.addEventListener("input", updateInboundPrice);
+  document.querySelector("#inbound-suggested")?.addEventListener("input", markSuggestedManual);
+  document.querySelector("[data-recalc-suggested]")?.addEventListener("click", recalcSuggestedPrice);
+  document.querySelector("#outbound-imei")?.addEventListener("input", updateOutboundLookup);
+  document.querySelector("[data-quick-model]")?.addEventListener("click", quickAddModel);
+  document.querySelector("[data-quick-storage]")?.addEventListener("click", quickAddStorage);
+  document.querySelector("[data-confirm-inbound]")?.addEventListener("click", confirmInbound);
+  document.querySelector("[data-back-inbound]")?.addEventListener("click", () => { inboundDraft = null; render(); });
+  document.querySelector("#catalog-form")?.addEventListener("submit", handleCatalogSubmit);
+  document.querySelector("[data-catalog-import-trigger]")?.addEventListener("click", () => document.querySelector("#catalog-import-input")?.click());
+  document.querySelector("#catalog-import-input")?.addEventListener("change", handleCatalogImportFile);
+
+  document.querySelectorAll("[data-export-yearly]").forEach((button) => button.addEventListener("click", (event) => exportYearlyCsv(event.currentTarget.dataset.exportYearly, "csv")));
+  document.querySelectorAll("[data-export-yearly-excel]").forEach((button) => button.addEventListener("click", (event) => exportYearlyCsv(event.currentTarget.dataset.exportYearlyExcel, "xlsx")));
+  document.querySelectorAll("[data-export-monthly]").forEach((button) => button.addEventListener("click", (event) => exportMonthlyCsv(event.currentTarget.dataset.exportMonthly, "csv")));
+  document.querySelectorAll("[data-export-monthly-excel]").forEach((button) => button.addEventListener("click", (event) => exportMonthlyCsv(event.currentTarget.dataset.exportMonthlyExcel, "xlsx")));
+  document.querySelectorAll("[data-export-sales]").forEach((button) => button.addEventListener("click", () => exportSalesCsv("csv")));
+  document.querySelectorAll("[data-export-sales-excel]").forEach((button) => button.addEventListener("click", () => exportSalesCsv("xlsx")));
+
+  document.querySelectorAll("[data-catalog-edit]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const [brand, model] = button.dataset.catalogEdit.split("||");
+      catalogPrefill = { brand: brand || "", model: model || "", storage: (catalog.storage[`${brand}|${model}`] || []).join("、") };
+      importMessage = "已载入编辑内容，修改后点击保存到型号库。";
+      render();
+    });
+  });
+  document.querySelectorAll("[data-catalog-stop]").forEach((button) => button.addEventListener("click", () => stopCatalogItem(button.dataset.catalogStop)));
+  document.querySelectorAll("[data-inventory-detail]").forEach((button) => {
+    button.addEventListener("click", () => { inventoryDetailImei = button.dataset.inventoryDetail; inventoryEditImei = ""; render(); });
+  });
+  document.querySelectorAll("[data-inventory-edit]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const item = inventory.find((phone) => phone.imei === button.dataset.inventoryEdit);
+      if (item?.status !== "在库" && !confirm("该手机已售出，修改信息可能影响历史记录，是否继续？")) return;
+      inventoryDetailImei = button.dataset.inventoryEdit;
+      inventoryEditImei = button.dataset.inventoryEdit;
+      render();
+    });
+  });
+  document.querySelectorAll("[data-inventory-delete]").forEach((button) => button.addEventListener("click", () => deleteInventoryItem(button.dataset.inventoryDelete)));
+  document.querySelector("#inventory-edit-form")?.addEventListener("submit", handleInventoryEditSave);
+  document.querySelector("[data-cancel-inventory-edit]")?.addEventListener("click", () => { inventoryEditImei = ""; inventoryMessage = "已取消编辑。"; render(); });
+  document.querySelector("[data-close-inventory-detail]")?.addEventListener("click", () => {
+    if (inventoryEditImei && !confirm("当前内容尚未保存，确定关闭吗？")) return;
+    inventoryDetailImei = "";
+    inventoryEditImei = "";
+    render();
+  });
+  document.querySelector("[data-cancel-outbound]")?.addEventListener("click", () => { outboundMessage = "已取消出库，未修改库存状态。"; render(); });
+  document.querySelectorAll("[data-sale-detail]").forEach((button) => {
+    button.addEventListener("click", () => { salesDetailImei = button.dataset.saleDetail; render(); });
+  });
+  document.querySelector("[data-close-detail]")?.addEventListener("click", () => { salesDetailImei = ""; render(); });
+  document.querySelectorAll("[data-close-modal]").forEach((button) => button.addEventListener("click", closeCurrentModal));
+  document.querySelectorAll(".modal-backdrop").forEach((backdrop) => {
+    backdrop.addEventListener("click", (event) => { if (event.target === backdrop) closeCurrentModal(); });
+  });
+}
+
+renderAdminDashboard = function() {
+  const stats = getStats();
+  return `
+    <section class="quick-actions">
+      <button class="primary-btn" data-route="inbound">新增入库</button>
+      <button class="secondary-btn" data-route="outbound">扫码出库</button>
+      <button class="secondary-btn" data-route="inventory">库存查询</button>
+      <button class="secondary-btn" data-route="sales">销售记录</button>
+      <button class="secondary-btn" data-route="monthly">月度统计</button>
+      <button class="secondary-btn" data-route="yearly">年度统计</button>
+      <button class="secondary-btn" data-route="catalog">品牌型号管理</button>
+      <button class="secondary-btn" data-route="data">导入导出</button>
+    </section>
+    <section class="grid">
+      ${metric("今日销售额", money(stats.todaySales))}
+      ${metric("今日利润", money(stats.todayProfit))}
+      ${metric("本月销售额", money(stats.monthSales))}
+      ${metric("本月利润", money(stats.monthProfit))}
+      ${metric("本月卖出台数", `${stats.monthSoldCount} 台`)}
+      ${metric("平均每台利润", money(stats.averageProfit))}
+      ${metric("本年销售额", money(stats.yearSales))}
+      ${metric("本年利润", money(stats.yearProfit))}
+      ${metric("当前在库", `${stats.stockCount} 台`)}
+      ${metric("库存总成本", money(stats.stockCost))}
+    </section>
+  `;
+}
+
+renderStaffDashboard = function(user) {
+  const myToday = saleRecords().filter((item) => item.seller === user.account && soldParts(item).date === localDateTime().slice(0, 10));
+  return `
+    <section class="quick-actions">
+      <button class="primary-btn" data-route="outbound">扫码出库</button>
+      <button class="secondary-btn" data-route="inventory">在库查询</button>
+      <button class="secondary-btn" data-route="sales">我的销售记录</button>
+    </section>
+    <section class="grid">
+      ${metric("在库手机", `${inventory.filter((item) => item.status === "在库").length} 台`)}
+      ${metric("今日个人销售", `${myToday.length} 单`)}
+    </section>
+  `;
+}
+
+function phoneInfoLine(item) {
+  return [item.storage, item.version, item.condition, item.color].filter(Boolean).join(" / ") || "-";
+}
+
+function renderPhoneCard(item, user, options = {}) {
+  const rule = permissions[user.role];
+  const saleStatus = item.saleStatus || (item.status === "在库" ? "未售出" : "已售出");
+  const showDeal = options.showDeal;
+  const showSold = options.showSold;
+  const showActions = options.showActions !== false;
+  const fromCatalog = options.fromCatalog;
+  return `
+    <article class="phone-card">
+      <div class="phone-card-head">
+        <div>
+          <h3 class="phone-card-title">${escapeHtmlMobile(item.brand || "-")} ${escapeHtmlMobile(item.model || "-")}</h3>
+          <div class="phone-card-sub">${escapeHtmlMobile(phoneInfoLine(item))}</div>
+        </div>
+        <div>${statusTag(item.status || "-")}</div>
+      </div>
+      <div class="phone-card-grid">
+        <div class="phone-kv"><span>串号/IMEI</span><strong>${escapeHtmlMobile(item.imei || "-")}</strong></div>
+        <div class="phone-kv"><span>内存容量</span><strong>${escapeHtmlMobile(item.storage || "-")}</strong></div>
+        <div class="phone-kv"><span>成色</span><strong>${escapeHtmlMobile(item.condition || "-")}</strong></div>
+        <div class="phone-kv"><span>销售状态</span><strong>${escapeHtmlMobile(saleStatus)}</strong></div>
+        ${rule.canSeeCost ? `<div class="phone-kv"><span>入库成本价</span><strong>${money(item.cost)}</strong></div>` : ""}
+        ${showDeal && rule.canSeeDealPrice ? `<div class="phone-kv"><span>实际成交价</span><strong>${money(item.deal || item.salePrice)}</strong></div>` : ""}
+        ${showDeal && rule.canSeeProfit ? `<div class="phone-kv"><span>实际利润</span><strong>${money(calcProfit(item))}</strong></div>` : ""}
+        <div class="phone-kv"><span>入库时间</span><strong>${escapeHtmlMobile(item.createdAt || "-")}</strong></div>
+        ${showSold ? `<div class="phone-kv"><span>出库时间</span><strong>${escapeHtmlMobile(soldParts(item).full)}</strong></div>` : ""}
+      </div>
+      ${
+        showActions
+          ? `<div class="action-row">
+              <button class="secondary-btn" data-inventory-detail="${item.imei}">查看</button>
+              ${rule.canEdit ? `<button class="secondary-btn" data-inventory-edit="${item.imei}">编辑</button>` : ""}
+              ${item.status === "在库" ? `<button class="primary-btn" data-route="outbound">出库</button>` : ""}
+              ${rule.canDelete ? `<button class="danger-btn" data-inventory-delete="${item.imei}">删除</button>` : ""}
+            </div>`
+          : ""
+      }
+    </article>
+  `;
+}
+
+renderInventory = function(user) {
+  const params = new URLSearchParams(window.location.hash.split("?")[1] || "");
+  const keyword = params.get("q") || "";
+  const status = params.get("status") || "在库";
+  const rows = inventory
+    .filter((item) => !status || item.status === status || item.saleStatus === status)
+    .filter((item) => !keyword || [item.imei, item.brand, item.model, item.storage, item.version, item.condition, item.color].some((value) => searchKey(value).includes(searchKey(keyword))));
+
+  return `
+    <form class="section filter-bar" onsubmit="event.preventDefault(); window.location.hash = '#/inventory?' + new URLSearchParams(new FormData(this)).toString()">
+      <div class="field"><label>搜索库存</label><input name="q" value="${escapeHtmlMobile(keyword)}" placeholder="串号 / 品牌 / 型号 / 内存" /></div>
+      <div class="field"><label>状态</label><select name="status">${optionTags(["在库", "已出库", "未售出", "已售出"], status)}</select></div>
+      <button class="primary-btn" type="submit">搜索</button>
+      <button class="secondary-btn" type="button" onclick="window.location.hash='#/inventory'">重置</button>
+    </form>
+    <section class="section">
+      <div class="section-head"><h2>库存明细</h2><span class="badge">${rows.length} 台</span></div>
+      <div class="mobile-card-list">
+        ${rows.length ? rows.map((item) => renderPhoneCard(item, user, { showSold: item.status !== "在库" })).join("") : `<div class="empty-state">没有找到相关手机。</div>`}
+      </div>
+    </section>
+    ${inventoryDetailImei ? renderInventoryDetail(user) : ""}
+  `;
+}
+
+function filteredOutboundRecords(user = getCurrentUser()) {
+  const params = new URLSearchParams(window.location.hash.split("?")[1] || "");
+  const date = params.get("date") || "";
+  const month = params.get("month") || "";
+  return saleRecords()
+    .filter((item) => user?.role === "admin" || item.seller === user?.account)
+    .filter((item) => !date || soldParts(item).date === date)
+    .filter((item) => !month || soldParts(item).date.startsWith(month))
+    .sort((a, b) => String(soldParts(b).full).localeCompare(String(soldParts(a).full)));
+}
+
+renderOutbound = function(user) {
+  const params = new URLSearchParams(window.location.hash.split("?")[1] || "");
+  const date = params.get("date") || "";
+  const month = params.get("month") || "";
+  const records = filteredOutboundRecords(user);
+  return `
+    <section class="section">
+      <div class="section-head"><h2>扫码出库</h2><span class="badge">${roleName(user.role)}可用</span></div>
+      <form id="outbound-form">
+        <div class="search-hero">
+          <div class="field">
+            <label>扫码 / 输入串号</label>
+            <input class="scan-input" id="outbound-imei" name="imei" placeholder="请输入或扫描要出库的手机串号/IMEI" autocomplete="off" />
+          </div>
+        </div>
+        <div id="outbound-lookup" class="lookup-box"><div class="empty-state">扫码或输入串号后，这里会显示手机信息。</div></div>
+        <div class="form-grid">
+          <div class="field"><label>实际成交价</label><input name="deal" type="number" min="1" step="1" placeholder="请输入成交价" inputmode="numeric" /></div>
+          <div class="field"><label>付款方式</label><select name="paymentMethod">${optionTags(["现金", "微信", "支付宝", "银行卡", "其他"])}</select></div>
+          <div class="field"><label>客户姓名</label><input name="customerName" placeholder="客户姓名" /></div>
+          <div class="field"><label>客户电话</label><input name="customerPhone" placeholder="客户电话" inputmode="tel" /></div>
+        </div>
+        <div class="section-head">
+          <div class="action-row">
+            <button class="secondary-btn" type="button" data-cancel-outbound>取消出库</button>
+            <button class="primary-btn" type="submit">确认销售</button>
+          </div>
+          ${outboundMessage ? `<span class="import-message">${outboundMessage}</span>` : ""}
+        </div>
+      </form>
+    </section>
+    <form id="outbound-filter-form" class="section filter-bar">
+      <div class="field"><label>出库日期</label><input name="date" type="date" value="${date}" /></div>
+      <div class="field"><label>出库月份</label><input name="month" type="month" value="${month}" /></div>
+      <button class="primary-btn" type="submit">筛选出库记录</button>
+      <button class="secondary-btn" type="button" onclick="window.location.hash='#/outbound'">重置</button>
+    </form>
+    <section class="section">
+      <div class="section-head">
+        <h2>出库记录</h2>
+        <div class="export-row">
+          <button class="secondary-btn" data-export-outbound>导出CSV</button>
+          <button class="secondary-btn" data-export-outbound-excel>导出Excel</button>
+        </div>
+      </div>
+      <div class="mobile-card-list">
+        ${
+          records.length
+            ? records.map((item) => renderPhoneCard(item, user, { showDeal: true, showSold: true, showActions: false }) + `<div class="phone-card" style="margin-top:-10px;"><button class="secondary-btn full-mobile" data-sale-detail="${item.imei}">查看出库详情</button></div>`).join("")
+            : `<div class="empty-state">暂无出库记录。</div>`
+        }
+      </div>
+    </section>
+    ${salesDetailImei ? renderSaleDetail(inventory.find((item) => item.imei === salesDetailImei), user) : ""}
+  `;
+}
+
+renderSales = function(user) {
+  const params = new URLSearchParams(window.location.hash.split("?")[1] || "");
+  const date = params.get("date") || "";
+  const month = params.get("month") || "";
+  const seller = params.get("seller") || "";
+  const sales = filteredSalesRecords(user);
+  const detail = inventory.find((item) => item.imei === salesDetailImei);
+  return `
+    <form class="section filter-bar" id="sales-filter-form" onsubmit="event.preventDefault(); window.location.hash = '#/sales?' + new URLSearchParams(new FormData(this)).toString()">
+      <div class="field"><label>按日期筛选</label><input name="date" type="date" value="${date}" /></div>
+      <div class="field"><label>按月份筛选</label><input name="month" type="month" value="${month}" /></div>
+      ${
+        user.role === "admin"
+          ? `<div class="field"><label>销售员</label><select name="seller">${optionTags(["admin", "staff"], seller)}</select></div>`
+          : `<input type="hidden" name="seller" value="${user.account}" />`
+      }
+      <button class="primary-btn" type="submit">查看销售记录</button>
+      <button class="secondary-btn" type="button" onclick="window.location.hash='#/sales'">重置</button>
+    </form>
+    <section class="section">
+      <div class="section-head">
+        <h2>${user.role === "admin" ? "销售记录" : "我的销售记录"}</h2>
+        <div class="export-row">
+          <button class="secondary-btn" data-export-sales>导出CSV</button>
+          <button class="secondary-btn" data-export-sales-excel>导出Excel</button>
+        </div>
+      </div>
+      <div class="mobile-card-list">
+        ${
+          sales.length
+            ? sales.map((item) => renderPhoneCard(item, user, { showDeal: true, showSold: true, showActions: false }) + `<div class="phone-card" style="margin-top:-10px;"><button class="secondary-btn full-mobile" data-sale-detail="${item.imei}">查看出库详情</button></div>`).join("")
+            : `<div class="empty-state">暂无销售记录。</div>`
+        }
+      </div>
+    </section>
+    ${detail ? renderSaleDetail(detail, user) : ""}
+  `;
+}
+
+renderMonthly = function() {
+  const params = new URLSearchParams(window.location.hash.split("?")[1] || "");
+  const month = params.get("month") || localDateTime().slice(0, 7);
+  const records = salesByMonth(month);
+  const stats = summarizeSales(records);
+  const user = getCurrentUser();
+  return `
+    <form class="section filter-bar" onsubmit="event.preventDefault(); window.location.hash = '#/monthly?' + new URLSearchParams(new FormData(this)).toString()">
+      <div class="field"><label>统计月份</label><input type="month" name="month" value="${month}" /></div>
+      <button class="primary-btn" type="submit">刷新统计</button>
+      <button class="secondary-btn" type="button" data-route="yearly">查看年度统计</button>
+      <div class="export-row">
+        <button class="secondary-btn" type="button" data-export-monthly="${month}">导出CSV</button>
+        <button class="secondary-btn" type="button" data-export-monthly-excel="${month}">导出Excel</button>
+      </div>
+    </form>
+    <section class="grid">
+      ${metric("当月销售额", money(stats.salesAmount))}
+      ${metric("当月进货成本", money(stats.costAmount))}
+      ${metric("当月总利润", money(stats.profitAmount))}
+      ${metric("卖出台数", `${stats.soldCount} 台`)}
+      ${metric("平均每台利润", money(stats.averageProfit))}
+      ${metric("平均成交价", money(stats.averagePrice))}
+    </section>
+    <section class="section">
+      <div class="section-head"><h2>${month} 销售明细</h2><span class="badge">${records.length} 单</span></div>
+      <div class="mobile-card-list">
+        ${records.length ? records.map((item) => renderPhoneCard(item, user, { showDeal: true, showSold: true, showActions: false })).join("") : `<div class="empty-state">本月暂无销售记录</div>`}
+      </div>
+    </section>
+  `;
+}
+
+renderYearly = function() {
+  const params = new URLSearchParams(window.location.hash.split("?")[1] || "");
+  const year = params.get("year") || localDateTime().slice(0, 4);
+  const records = salesByYear(year);
+  const stats = summarizeSales(records);
+  const monthlyBreakdown = Array.from({ length: 12 }, (_, index) => {
+    const month = `${year}-${String(index + 1).padStart(2, "0")}`;
+    return { month, ...summarizeSales(salesByMonth(month)) };
+  });
+  return `
+    <form class="section filter-bar" onsubmit="event.preventDefault(); window.location.hash = '#/yearly?' + new URLSearchParams(new FormData(this)).toString()">
+      <div class="field"><label>统计年份</label><input type="number" name="year" min="2000" max="2100" value="${year}" /></div>
+      <button class="primary-btn" type="submit">刷新统计</button>
+      <div class="export-row">
+        <button class="secondary-btn" type="button" data-export-yearly="${year}">导出CSV</button>
+        <button class="secondary-btn" type="button" data-export-yearly-excel="${year}">导出Excel</button>
+      </div>
+    </form>
+    <section class="grid">
+      ${metric("年度销售额", money(stats.salesAmount))}
+      ${metric("年度总利润", money(stats.profitAmount))}
+      ${metric("卖出台数", `${stats.soldCount} 台`)}
+      ${metric("平均每台利润", money(stats.averageProfit))}
+      ${metric("平均成交价", money(stats.averagePrice))}
+      ${metric("毛利率", `${stats.grossMarginRate}%`)}
+    </section>
+    <section class="section">
+      <div class="section-head"><h2>${year} 年 12个月拆分</h2></div>
+      <div class="mobile-card-list">
+        ${monthlyBreakdown
+          .map(
+            (item) => `
+              <article class="phone-card">
+                <div class="phone-card-head">
+                  <div><h3 class="phone-card-title">${item.month}</h3><div class="phone-card-sub">点击查看本月明细</div></div>
+                  <button class="secondary-btn" data-route="monthly?month=${item.month}">查看</button>
+                </div>
+                <div class="phone-card-grid">
+                  <div class="phone-kv"><span>卖出台数</span><strong>${item.soldCount} 台</strong></div>
+                  <div class="phone-kv"><span>销售额</span><strong>${money(item.salesAmount)}</strong></div>
+                  <div class="phone-kv"><span>总利润</span><strong>${money(item.profitAmount)}</strong></div>
+                  <div class="phone-kv"><span>平均每台利润</span><strong>${money(item.averageProfit)}</strong></div>
+                </div>
+              </article>
+            `,
+          )
+          .join("")}
+      </div>
+    </section>
+  `;
+}
+
+renderCatalog = function() {
+  const params = new URLSearchParams(window.location.hash.split("?")[1] || "");
+  const keyword = params.get("q") || "";
+  const stockKeyword = params.get("stockQ") || "";
+  const stockStatus = params.get("stockStatus") || "";
+  const activeTab = params.get("tab") || "stock";
+  const stockRecords = modelInventoryMatches(stockKeyword).filter((item) => !stockStatus || item.status === stockStatus || item.saleStatus === stockStatus);
+  const stockSummary = modelInventorySummary(stockRecords);
+  const groups = Object.values(
+    stockRecords.reduce((acc, item) => {
+      const key = `${item.brand || "-"} ${item.model || "-"}`;
+      acc[key] = acc[key] || { label: key, total: 0, inStock: 0, sold: 0 };
+      acc[key].total += 1;
+      if (item.status === "在库") acc[key].inStock += 1;
+      else acc[key].sold += 1;
+      return acc;
+    }, {}),
+  );
+
+  return `
+    <div class="mobile-tabs">
+      <button class="${activeTab === "stock" ? "active" : ""}" onclick="window.location.hash='#/catalog?tab=stock'">库存搜索</button>
+      <button class="${activeTab === "library" ? "active" : ""}" onclick="window.location.hash='#/catalog?tab=library'">型号库</button>
+    </div>
+    ${
+      activeTab === "stock"
+        ? `
+          <form class="section filter-bar" onsubmit="event.preventDefault(); const p=new URLSearchParams(new FormData(this)); p.set('tab','stock'); window.location.hash = '#/catalog?' + p.toString()">
+            <div class="field"><label>库存机型搜索</label><input name="stockQ" value="${escapeHtmlMobile(stockKeyword)}" placeholder="例如 iPhone13、Mate60、Reno8" /></div>
+            <div class="field"><label>状态筛选</label><select name="stockStatus">${optionTags(["在库", "已出库", "已售出"], stockStatus)}</select></div>
+            <button class="primary-btn" type="submit">搜索库存</button>
+            <button class="secondary-btn" type="button" onclick="window.location.hash='#/catalog?tab=stock'">重置</button>
+          </form>
+          ${stockKeyword ? renderCatalogInventoryResults(stockKeyword, stockRecords, stockSummary, groups) : `<section class="section"><div class="empty-state">请输入型号关键词，例如 iPhone13。系统会显示具体机型、内存、成色和入库价格。</div></section>`}
+        `
+        : `
+          <section class="section">
+            <div class="section-head">
+              <h2>型号库管理</h2>
+              <div class="action-row">
+                <button class="secondary-btn" data-catalog-import-trigger>导入CSV</button>
+                <input id="catalog-import-input" type="file" accept=".csv,text/csv" hidden />
+              </div>
+            </div>
+            <form id="catalog-form" class="form-grid">
+              <div class="field"><label>品牌名称</label><input id="catalog-brand-input" name="brand" placeholder="例如 苹果" value="${escapeHtmlMobile(catalogPrefill.brand || "")}" /></div>
+              <div class="field"><label>型号名称</label><input id="catalog-model-input" name="model" placeholder="例如 iPhone 16 Pro" value="${escapeHtmlMobile(catalogPrefill.model || "")}" /></div>
+              <div class="field"><label>内存容量</label><input id="catalog-storage-input" name="storage" placeholder="例如 256G 或 12G+512G" value="${escapeHtmlMobile(catalogPrefill.storage || "")}" /></div>
+              <button class="primary-btn" type="submit">保存到型号库</button>
+            </form>
+            ${importMessage ? `<div class="import-box"><span class="import-message">${importMessage}</span></div>` : ""}
+          </section>
+          <form class="section filter-bar" onsubmit="event.preventDefault(); const p=new URLSearchParams(new FormData(this)); p.set('tab','library'); window.location.hash = '#/catalog?' + p.toString()">
+            <div class="field"><label>搜索品牌 / 型号</label><input name="q" value="${escapeHtmlMobile(keyword)}" placeholder="例如 iPhone 13 或 Mate" /></div>
+            <button class="primary-btn" type="submit">搜索</button>
+            <button class="secondary-btn" type="button" onclick="window.location.hash='#/catalog?tab=library'">重置</button>
+          </form>
+          <section class="section">
+            <div class="section-head"><h2>当前型号库</h2></div>
+            <div class="mobile-card-list">
+              ${catalog.brands
+                .filter((brand) => !keyword || searchKey(brand).includes(searchKey(keyword)) || (catalog.models[brand] || []).some((model) => searchKey(model).includes(searchKey(keyword))))
+                .flatMap((brand) => {
+                  const models = (catalog.models[brand] || []).filter((model) => !keyword || searchKey(brand).includes(searchKey(keyword)) || searchKey(model).includes(searchKey(keyword)));
+                  return models.length
+                    ? models.map((model) => `
+                        <article class="phone-card">
+                          <div class="phone-card-head"><div><h3 class="phone-card-title">${escapeHtmlMobile(brand)} ${escapeHtmlMobile(model)}</h3><div class="phone-card-sub">${escapeHtmlMobile((catalog.storage[`${brand}|${model}`] || catalog.storage[brand] || []).join("、") || "通用容量")}</div></div></div>
+                          <div class="action-row"><button class="secondary-btn" data-catalog-edit="${brand}||${model}">编辑</button><button class="danger-btn" data-catalog-stop="${brand}||${model}">停用</button></div>
+                        </article>`)
+                    : [`<article class="phone-card"><h3 class="phone-card-title">${escapeHtmlMobile(brand)}</h3><button class="danger-btn" data-catalog-stop="${brand}||">停用品牌</button></article>`];
+                })
+                .join("")}
+            </div>
+          </section>
+        `
+    }
+    ${inventoryDetailImei ? renderInventoryDetail(getCurrentUser()) : ""}
+  `;
+}
+
+renderCatalogInventoryResults = function(keyword, records, summary, groups) {
+  const user = getCurrentUser();
+  return `
+    <section class="grid">
+      ${metric("匹配总台数", `${summary.total} 台`)}
+      ${metric("在库台数", `${summary.inStock} 台`)}
+      ${metric("已售出台数", `${summary.sold} 台`)}
+      ${metric("在库总成本", money(summary.inStockCost))}
+    </section>
+    <section class="section">
+      <div class="section-head"><h2>“${escapeHtmlMobile(keyword)}” 具体机型</h2></div>
+      <div class="mobile-card-list">
+        ${
+          groups.length
+            ? groups.map((group) => `
+                <article class="phone-card">
+                  <h3 class="phone-card-title">${escapeHtmlMobile(group.label)}</h3>
+                  <div class="phone-card-grid">
+                    <div class="phone-kv"><span>总数量</span><strong>${group.total} 台</strong></div>
+                    <div class="phone-kv"><span>在库</span><strong>${group.inStock} 台</strong></div>
+                    <div class="phone-kv"><span>已售出</span><strong>${group.sold} 台</strong></div>
+                  </div>
+                </article>
+              `).join("")
+            : `<div class="empty-state">未找到相关库存，请检查关键词或先新增库存。</div>`
+        }
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-head"><h2>真实库存明细</h2><span class="badge">不显示建议售价</span></div>
+      <div class="mobile-card-list">
+        ${records.length ? records.map((item) => renderPhoneCard(item, user, { showSold: item.status !== "在库", fromCatalog: true })).join("") : `<div class="empty-state">未找到相关库存，请检查关键词或先新增库存。</div>`}
+      </div>
+    </section>
+  `;
+}
+
+function rowsToCsv(rows) {
+  return rows.map((row) => row.map((value) => `"${String(value ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
+}
+
+function downloadBlobFile(filename, blob) {
+  const link = document.createElement("a");
+  const url = URL.createObjectURL(blob);
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 800);
+}
+
+downloadRowsAsCsv = function(filename, rows) {
+  if (filename.endsWith(".xlsx")) {
+    downloadXlsx(filename, [{ name: "数据", rows }]);
+    return;
+  }
+  if (filename.endsWith(".xls")) {
+    downloadXlsx(filename.replace(/\.xls$/i, ".xlsx"), [{ name: "数据", rows }]);
+    return;
+  }
+  downloadBlobFile(filename, new Blob([`\uFEFF${rowsToCsv(rows)}`], { type: "text/csv;charset=utf-8" }));
+}
+
+function exportInventoryExcel() {
+  const rows = [["IMEI", "品牌", "型号", "内存", "版本", "成色", "颜色", "状态", "销售状态", "进货价", "实际成交价", "实际利润", "客户", "销售员", "出库时间", "备注"]];
+  inventory.forEach((item) => rows.push([item.imei, item.brand, item.model, item.storage || "", item.version || "", item.condition || "", item.color || "", item.status, item.saleStatus || "", item.cost || 0, item.deal || "", item.deal ? calcProfit(item) : "", item.customerName || item.customer || "", item.seller || "", soldParts(item).full === "-" ? "" : soldParts(item).full, item.remark || ""]));
+  downloadXlsx("手机库存.xlsx", [{ name: "库存", rows }]);
+}
+
+function salesExportRows(records, includeCost = true) {
+  const header = includeCost
+    ? ["出库时间", "IMEI", "品牌", "具体型号", "内存容量", "版本", "成色", "颜色", "实际成交价", "入库成本价", "实际利润", "付款方式", "销售员", "客户姓名", "客户电话", "备注"]
+    : ["出库时间", "IMEI", "品牌", "具体型号", "内存容量", "版本", "成色", "颜色", "实际成交价", "付款方式", "销售员", "客户姓名", "客户电话", "备注"];
+  const rows = [header];
+  records.forEach((item) => {
+    rows.push(
+      includeCost
+        ? [soldParts(item).full, item.imei, item.brand, item.model, item.storage || "", item.version || "", item.condition || "", item.color || "", Number(item.salePrice || item.deal || 0), Number(item.costPrice || item.cost || 0), Number(item.actualProfit ?? calcProfit(item)), item.paymentMethod || "", item.seller || "", item.customerName || item.customer || "", item.customerPhone || "", item.remark || ""]
+        : [soldParts(item).full, item.imei, item.brand, item.model, item.storage || "", item.version || "", item.condition || "", item.color || "", Number(item.salePrice || item.deal || 0), item.paymentMethod || "", item.seller || "", item.customerName || item.customer || "", item.customerPhone || "", item.remark || ""],
+    );
+  });
+  return rows;
+}
+
+function exportOutboundRecords(type = "csv") {
+  const user = getCurrentUser();
+  const records = filteredOutboundRecords(user);
+  const includeCost = user?.role === "admin";
+  const params = new URLSearchParams(window.location.hash.split("?")[1] || "");
+  const suffix = params.get("month") || params.get("date") || localDateTime().slice(0, 10);
+  const rows = salesExportRows(records, includeCost);
+  if (type === "xlsx") downloadXlsx(`手机出库记录_${suffix}.xlsx`, [{ name: "出库记录", rows }]);
+  else downloadRowsAsCsv(`手机出库记录_${suffix}.csv`, rows);
+}
+
+exportSalesCsv = function(type = "csv") {
+  const user = getCurrentUser();
+  const records = filteredSalesRecords(user);
+  const includeCost = user?.role === "admin";
+  const params = new URLSearchParams(window.location.hash.split("?")[1] || "");
+  const suffix = params.get("month") || params.get("date") || "全部";
+  const rows = salesExportRows(records, includeCost);
+  if (type === "xlsx" || type === "xls") downloadXlsx(`销售记录_${suffix}.xlsx`, [{ name: "销售记录", rows }]);
+  else downloadRowsAsCsv(`销售记录_${suffix}.csv`, rows);
+}
+
+exportMonthlyCsv = function(month, type = "csv") {
+  const records = salesByMonth(month);
+  const stats = summarizeSales(records);
+  const summaryRows = [
+    ["月份", "当月卖出台数", "当月销售总额", "当月入库成本总额", "当月总利润", "平均每台利润", "平均成交价", "平均毛利率"],
+    [month, stats.soldCount, stats.salesAmount, stats.costAmount, stats.profitAmount, stats.averageProfit, stats.averagePrice, `${stats.grossMarginRate}%`],
+  ];
+  const detailRows = salesExportRows(records, true);
+  if (type === "xlsx" || type === "xls") {
+    downloadXlsx(`月度销售统计_${month}.xlsx`, [
+      { name: "月度汇总", rows: summaryRows },
+      { name: "销售明细", rows: detailRows },
+    ]);
+  } else {
+    downloadRowsAsCsv(`月度销售统计_${month}.csv`, [["月度汇总"], ...summaryRows, [], ["销售明细"], ...detailRows]);
+  }
+}
+
+exportYearlyCsv = function(year, type = "csv") {
+  const records = salesByYear(year);
+  const stats = summarizeSales(records);
+  const summaryRows = [
+    ["年份", "年度卖出台数", "年度销售总额", "年度入库成本总额", "年度总利润", "年度平均每台利润", "年度平均成交价", "年度平均毛利率"],
+    [year, stats.soldCount, stats.salesAmount, stats.costAmount, stats.profitAmount, stats.averageProfit, stats.averagePrice, `${stats.grossMarginRate}%`],
+  ];
+  const monthRows = [["月份", "卖出台数", "销售额", "入库成本", "总利润", "平均每台利润", "平均成交价", "毛利率"]];
+  Array.from({ length: 12 }, (_, index) => `${year}-${String(index + 1).padStart(2, "0")}`).forEach((month) => {
+    const item = summarizeSales(salesByMonth(month));
+    monthRows.push([month, item.soldCount, item.salesAmount, item.costAmount, item.profitAmount, item.averageProfit, item.averagePrice, `${item.grossMarginRate}%`]);
+  });
+  const detailRows = salesExportRows(records, true);
+  if (type === "xlsx" || type === "xls") {
+    downloadXlsx(`年度销售统计_${year}.xlsx`, [
+      { name: "年度汇总", rows: summaryRows },
+      { name: "12个月拆分", rows: monthRows },
+      { name: "全年明细", rows: detailRows },
+    ]);
+  } else {
+    downloadRowsAsCsv(`年度销售统计_${year}.csv`, [["年度汇总"], ...summaryRows, [], ["12个月拆分"], ...monthRows, [], ["全年销售明细"], ...detailRows]);
+  }
+}
+
+function colName(index) {
+  let name = "";
+  let n = index + 1;
+  while (n > 0) {
+    const r = (n - 1) % 26;
+    name = String.fromCharCode(65 + r) + name;
+    n = Math.floor((n - 1) / 26);
+  }
+  return name;
+}
+
+function xmlEscape(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function sheetXml(rows) {
+  const rowXml = rows.map((row, rIndex) => {
+    const cells = row.map((value, cIndex) => {
+      const ref = `${colName(cIndex)}${rIndex + 1}`;
+      if (typeof value === "number" && Number.isFinite(value)) return `<c r="${ref}"><v>${value}</v></c>`;
+      return `<c r="${ref}" t="inlineStr"><is><t>${xmlEscape(value)}</t></is></c>`;
+    }).join("");
+    return `<row r="${rIndex + 1}">${cells}</row>`;
+  }).join("");
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>${rowXml}</sheetData></worksheet>`;
+}
+
+function sanitizeSheetName(name, index) {
+  const safe = String(name || `Sheet${index + 1}`).replace(/[\\/?*:[\]]/g, "").slice(0, 28);
+  return safe || `Sheet${index + 1}`;
+}
+
+function makeXlsxFiles(sheets) {
+  const cleanSheets = sheets.map((sheet, index) => ({ name: sanitizeSheetName(sheet.name, index), rows: sheet.rows || [] }));
+  const workbookSheets = cleanSheets.map((sheet, index) => `<sheet name="${xmlEscape(sheet.name)}" sheetId="${index + 1}" r:id="rId${index + 1}"/>`).join("");
+  const rels = cleanSheets.map((_, index) => `<Relationship Id="rId${index + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${index + 1}.xml"/>`).join("");
+  const overrides = cleanSheets.map((_, index) => `<Override PartName="/xl/worksheets/sheet${index + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join("");
+  const files = [
+    { name: "[Content_Types].xml", text: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>${overrides}</Types>` },
+    { name: "_rels/.rels", text: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>` },
+    { name: "xl/workbook.xml", text: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${workbookSheets}</sheets></workbook>` },
+    { name: "xl/_rels/workbook.xml.rels", text: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${rels}</Relationships>` },
+    ...cleanSheets.map((sheet, index) => ({ name: `xl/worksheets/sheet${index + 1}.xml`, text: sheetXml(sheet.rows) })),
+  ];
+  return files;
+}
+
+function crc32Bytes(bytes) {
+  if (!crc32Bytes.table) {
+    crc32Bytes.table = Array.from({ length: 256 }, (_, n) => {
+      let c = n;
+      for (let k = 0; k < 8; k += 1) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+      return c >>> 0;
+    });
+  }
+  let c = 0xffffffff;
+  for (const b of bytes) c = crc32Bytes.table[(c ^ b) & 0xff] ^ (c >>> 8);
+  return (c ^ 0xffffffff) >>> 0;
+}
+
+function push16(arr, value) { arr.push(value & 255, (value >>> 8) & 255); }
+function push32(arr, value) { arr.push(value & 255, (value >>> 8) & 255, (value >>> 16) & 255, (value >>> 24) & 255); }
+
+function dosTimeDate(date = new Date()) {
+  const time = (date.getHours() << 11) | (date.getMinutes() << 5) | Math.floor(date.getSeconds() / 2);
+  const d = ((date.getFullYear() - 1980) << 9) | ((date.getMonth() + 1) << 5) | date.getDate();
+  return { time, date: d };
+}
+
+function makeZip(files) {
+  const encoder = new TextEncoder();
+  const localParts = [];
+  const centralParts = [];
+  let offset = 0;
+  const now = dosTimeDate();
+
+  files.forEach((file) => {
+    const nameBytes = encoder.encode(file.name);
+    const data = encoder.encode(file.text);
+    const crc = crc32Bytes(data);
+    const local = [];
+    push32(local, 0x04034b50);
+    push16(local, 20);
+    push16(local, 0x0800);
+    push16(local, 0);
+    push16(local, now.time);
+    push16(local, now.date);
+    push32(local, crc);
+    push32(local, data.length);
+    push32(local, data.length);
+    push16(local, nameBytes.length);
+    push16(local, 0);
+    const localHeader = new Uint8Array([...local, ...nameBytes]);
+    localParts.push(localHeader, data);
+
+    const central = [];
+    push32(central, 0x02014b50);
+    push16(central, 20);
+    push16(central, 20);
+    push16(central, 0x0800);
+    push16(central, 0);
+    push16(central, now.time);
+    push16(central, now.date);
+    push32(central, crc);
+    push32(central, data.length);
+    push32(central, data.length);
+    push16(central, nameBytes.length);
+    push16(central, 0);
+    push16(central, 0);
+    push16(central, 0);
+    push16(central, 0);
+    push32(central, 0);
+    push32(central, offset);
+    centralParts.push(new Uint8Array([...central, ...nameBytes]));
+
+    offset += localHeader.length + data.length;
+  });
+
+  const centralSize = centralParts.reduce((sum, part) => sum + part.length, 0);
+  const eocd = [];
+  push32(eocd, 0x06054b50);
+  push16(eocd, 0);
+  push16(eocd, 0);
+  push16(eocd, files.length);
+  push16(eocd, files.length);
+  push32(eocd, centralSize);
+  push32(eocd, offset);
+  push16(eocd, 0);
+
+  const all = [...localParts, ...centralParts, new Uint8Array(eocd)];
+  const total = all.reduce((sum, part) => sum + part.length, 0);
+  const out = new Uint8Array(total);
+  let cursor = 0;
+  all.forEach((part) => { out.set(part, cursor); cursor += part.length; });
+  return out;
+}
+
+function downloadXlsx(filename, sheets) {
+  try {
+    const bytes = makeZip(makeXlsxFiles(sheets));
+    downloadBlobFile(filename, new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }));
+  } catch (error) {
+    alert(`Excel导出失败：${error.message || error}`);
+  }
+}
+
+render();
+
+    </script>
+  
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+  });
+}
+</script>
+
+  </body>
+</html>
